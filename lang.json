@@ -1,13 +1,39 @@
 {
-    "home": {
-      "title": {
-        "en": "Home",
-        "es": "Inicio"
-      },
-      "paragraph": {
-        "en": "This is the home page.",
-        "es": "Esta es la página de inicio."
-      }
+  "home": {
+    "title": {
+      "en": "Home",
+      "es": "Inicio"
+    },
+    "paragraph": {
+      "en": "This is the home page.",
+      "es": "Esta es la página de inicio."
+    }
+  },
+  "api-response": {
+    "success": {
+      "en": "Request completed successfully.",
+      "es": "Solicitud completada con éxito."
+    },
+    "error": {
+      "en": "Something went wrong.",
+      "es": "Algo salió mal."
+    },
+    "validation": {
+      "en": "Validation failed.",
+      "es": "La validación falló."
+    },
+    "unauthorized": {
+      "en": "Unauthorized access.",
+      "es": "Acceso no autorizado."
+    },
+    "forbidden": {
+      "en": "Access forbidden.",
+      "es": "Acceso denegado."
+    },
+    "not_found": {
+      "en": "Resource not found.",
+      "es": "Recurso no encontrado."
     }
   }
+}
   

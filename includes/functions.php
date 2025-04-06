@@ -1,9 +1,22 @@
 <?php
 
-define('IMAGES_FOLDER', $_SERVER['DOCUMENT_ROOT'].'/images/');
-define('DOCS_FOLDER', $_SERVER['DOCUMENT_ROOT'].'/docs/');
+//Uploads path
+define('UPLOADS_PATH', $_SERVER['DOCUMENT_ROOT'].'/uploads/');
+define('PETS_IMAGES_PATH', UPLOADS_PATH . 'pets/');
+define('VETS_IMAGES_PATH', UPLOADS_PATH . 'vets/');
+define('OWNERS_IMAGES_PATH', UPLOADS_PATH . 'owners/');
+define('DOCS_PATH', UPLOADS_PATH . 'documents/');
 
-//Función para imprimir el código a probar y detener la ejecución del código siguiente
+
+//Resources path
+define('RESOURCES_PATH', $_SERVER['DOCUMENT_ROOT'].'/resources/');
+define('PLACEHOLDER_PATH', RESOURCES_PATH . 'placeholder/');
+define('PDF_TEMPLATES_PATH', RESOURCES_PATH . 'pdf/');
+define('EMAIL_TEMPLATES_PATH', RESOURCES_PATH . 'emails/');
+define('CONTRACTS_PATH', RESOURCES_PATH . 'contracts/');
+
+
+//Print the variable in a readable format for debugging and stop the execution of the script
 function debugging($variable) : string {
     echo "<pre>";
     var_dump($variable);
@@ -11,22 +24,21 @@ function debugging($variable) : string {
     exit;
 }
 
-// Escapa / Sanitizar el HTML
+// Escape HTML special characters to prevent XSS attacks
 function s($html) : string {
-    $s = htmlspecialchars($html);
-    return $s;
+    return htmlspecialchars((string) $html ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-function sText($var) : string{
-    if(str_contains($var, "'") === true){
-        $var = str_replace("'", "´", $var);
-    }
-    return $var;
+//Function to clean the text and remove special characters
+function cleanText($value) : string {
+    $value = trim((string) $value);
+    return str_replace("'", "´", $value);
 }
 
-function redirection(string $url){
+//Function to validate the id in the URL and redirect to a specific page if it is not valid
+function validateRedirect(string $url){
     $id = s($_GET['id']);
-    //Validar la URL por ID válido
+    //Valide the id to be an integer
     $id = filter_var($id, FILTER_VALIDATE_INT);
 
     if(!$id){
@@ -42,7 +54,7 @@ function isAuth() : void {
     }
 }
 
-//Revisa la página actual para resaltar el ícono del menú
+//Reviews the current page to highlight the menu icon
 function current_page($path){
     if(str_contains($_SERVER['REQUEST_URI'], $path) === true){
         echo 'active';
@@ -51,7 +63,7 @@ function current_page($path){
     }
 }
 
-//Revisa la página actual para resaltar el ícono del menú del dashboard
+//Reviews the current page to highlight the menu icon in the admin panel
 function admin_page($path){
     if(str_contains($_SERVER['REQUEST_URI'], $path) === true){
         echo 'dashboard__link--current';
@@ -78,18 +90,15 @@ function isVet() : void {
     }
 }
 
-//Compueba si el usuario está logueado y redirige a su dashboard
-function sessionActive() : void {
-    if($_SESSION['userLevel'] === '1'){
-        echo '/admin/dashboard';
-    } elseif($_SESSION['userLevel'] === '2'){
-        echo '/builder/dashboard';
-    } elseif($_SESSION['userLevel'] === '3'){
-        echo '/builder/dashboard';
-    } else{
-        echo '/';
+//Check if the user is logged in and has a role
+function getDashboardRedirect(): string {
+    if (!isset($_SESSION['login']) || !isset($_SESSION['role_slug'])) {
+        return '/';
     }
+
+    return '/' . $_SESSION['role_slug'] . '/dashboard';
 }
+
 
 function chooseLanguage() {
     if(isset($_GET['lang'])) {
@@ -104,7 +113,7 @@ function chooseLanguage() {
     return $_SESSION['lang'];
 }
 
-//Función para leer e imprimir cada valor del array de idiomas
+//Function to get the language from the lang.json file
 function tt($key) {
     ob_start();
     $language = chooseLanguage();
