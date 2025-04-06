@@ -32,9 +32,9 @@ We use a custom PHP-based migration and seeding system to manage the database.
     1. Make sure your `.env` is configured and DB is created
     2. Run:
 
-    ```bash
-        php database/migrate.php
-    ```
+```bash
+    php database/migrate.php
+```
 
     This will:
 
@@ -47,9 +47,9 @@ We use a custom PHP-based migration and seeding system to manage the database.
 ## 🔁 Rollback Database Migrations
     Rolls back the latest executed migration:
 
-    ```bash
-        php database/rollback.php
-    ```
+```bash
+    php database/rollback.php
+```
 
 
 ## ✅ How to update the composer file
@@ -62,9 +62,9 @@ We use a custom PHP-based migration and seeding system to manage the database.
 ## 🌱 Data Seeding
     To insert starter/default data:
 
-    ```bash
-        php database/seed.php
-    ```
+```bash
+    php database/seed.php
+```
 
     Seeders are stored in database/seeders/, and are only run once (tracked in the seeds table).
 
@@ -79,9 +79,9 @@ We use a custom PHP-based migration and seeding system to manage the database.
 ##🛠️ Composer Autoload
     If you add a new class, run:
 
-    ```bash
-        composer dump-autoload
-    ```
+```bash
+    composer dump-autoload
+```
     This regenerates the autoloader to recognize new files/classes.
 
 
@@ -117,14 +117,18 @@ Re-run all migrations with:
 
     * isOwner($userId) – Ownership check (coming soon)
 
-# 📤 API Helpers (coming)
+# 📤 API Helpers 
+    * ApiResponseHelper::success($data)
+
+    * ApiResponseHelper::error()
+
+    * ApiResponseHelper::validate()
+
     * ApiResponseHelper::unauthorized()
 
     * ApiResponseHelper::forbidden()
 
     * ApiResponseHelper::notFound()
-
-    * ApiResponseHelper::success($data)
 
 ## 📂 Folder Structure
     /controllers         
