@@ -7,7 +7,8 @@
             "MVC\\" : "./",
             "Controllers\\" : "./controllers",
             "Model\\" : "./models",
-            "Helpers\\": "Helpers/"
+            "Helpers\\": "Helpers/",
+            "Core\\": "Core/"
         }
     },
     "require": {

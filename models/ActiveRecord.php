@@ -45,19 +45,42 @@ class ActiveRecord{
 
     // SQL fetch to create objects in memory
     public static function consultSQL($query) {
-        // Consult the database
+        // If the table has soft deletes and the query is not already filtering deleted_at
+        if (in_array('deleted_at', static::$columnsDB) && !str_contains(strtolower($query), 'deleted_at')) {
+            // Add filter only if no WHERE clause exists
+            if (str_contains(strtolower($query), 'where')) {
+                $query .= " AND deleted_at IS NULL";
+            } else {
+                $query .= " WHERE deleted_at IS NULL";
+            }
+        }
+    
         $result = self::$db->query($query);
-        // iterate the results
         $array = [];
-        while($registry = $result->fetch_assoc()) {
+    
+        while ($registry = $result->fetch_assoc()) {
             $array[] = static::createObject($registry);
         }
-        // free memory
+    
         $result->free();
-
-        // return the array of objects
         return $array;
     }
+
+    public static function SQLWithTrashed() {
+        // bypasses consultSQL filter
+        $query = "SELECT * FROM " . static::$table;
+        $result = self::$db->query($query);
+        $array = [];
+    
+        while ($registry = $result->fetch_assoc()) {
+            $array[] = static::createObject($registry);
+        }
+    
+        $result->free();
+        return $array;
+    }
+    
+    
 
     public static function rawQuery($query) {
         return self::consultSQL($query);
@@ -164,8 +187,6 @@ class ActiveRecord{
             $clauses[] = "{$where['column']} = '{$where['value']}'";
         }
     
-        $clauses[] = "deleted_at IS NULL";
-    
         if (!empty($clauses)) {
             $query .= " WHERE " . implode(" AND ", $clauses);
         }
@@ -200,10 +221,14 @@ class ActiveRecord{
     public static function exists($column, $value, $exceptId = null): bool {
         $value = self::$db->escape_string($value);
         $query = "SELECT COUNT(*) as total FROM " . static::$table .
-                 " WHERE $column = '$value' AND deleted_at IS NULL";
+                 " WHERE {$column} = '{$value}'";
     
         if ($exceptId) {
             $query .= " AND id != " . intval($exceptId);
+        }
+    
+        if (in_array('deleted_at', static::$columnsDB)) {
+            $query .= " AND deleted_at IS NULL";
         }
     
         $result = self::$db->query($query);
@@ -213,18 +238,18 @@ class ActiveRecord{
     }
     
     
-    public static function pluck($column, array $conditions = []) {
-        $query = "SELECT $column FROM " . static::$table;
-        $clauses = [];
     
-        foreach ($conditions as $key => $value) {
-            $value = self::$db->escape_string($value);
-            $clauses[] = "$key = '$value'";
+    public static function pluck($column, $id) {
+        $column = self::$db->escape_string($column);
+        $id = intval($id);
+    
+        $query = "SELECT $column FROM " . static::$table . " WHERE id = $id";
+    
+        if (in_array('deleted_at', static::$columnsDB)) {
+            $query .= " AND deleted_at IS NULL";
         }
     
-        $clauses[] = "deleted_at IS NULL";
-    
-        $query .= " WHERE " . implode(" AND ", $clauses) . " LIMIT 1";
+        $query .= " LIMIT 1";
     
         $result = self::$db->query($query);
         $row = $result->fetch_assoc();
@@ -232,42 +257,33 @@ class ActiveRecord{
         return $row[$column] ?? null;
     }
     
+    
 
     
-    public static function pluckAll($column, array $conditions = [], $orderBy = null, $direction = 'ASC') {
+    public static function pluckAll($column) {
+        $column = self::$db->escape_string($column);
+    
         $query = "SELECT $column FROM " . static::$table;
-        $clauses = [];
     
-        foreach ($conditions as $key => $value) {
-            $value = self::$db->escape_string($value);
-            $clauses[] = "$key = '$value'";
-        }
-    
-        $clauses[] = "deleted_at IS NULL";
-    
-        if (!empty($clauses)) {
-            $query .= " WHERE " . implode(" AND ", $clauses);
-        }
-    
-        if ($orderBy) {
-            $orderBy = self::$db->escape_string($orderBy);
-            $query .= " ORDER BY $orderBy " . strtoupper($direction);
+        if (in_array('deleted_at', static::$columnsDB)) {
+            $query .= " WHERE deleted_at IS NULL";
         }
     
         $result = self::$db->query($query);
-        $values = [];
+        $items = [];
     
         while ($row = $result->fetch_assoc()) {
-            $values[] = $row[$column];
+            $items[] = $row[$column];
         }
     
-        return $values;
+        return $items;
     }
+    
 
     // Get all the records from the table
     public static function all($columns = ['*'], $orderBy = 'id', $direction = 'DESC', $limit = null) {
         $columnsList = implode(', ', $columns);
-        $query = "SELECT $columnsList FROM " . static::$table . " WHERE deleted_at IS NULL";
+        $query = "SELECT $columnsList FROM " . static::$table;
     
         if ($orderBy) {
             $query .= " ORDER BY $orderBy " . strtoupper($direction);
@@ -283,17 +299,23 @@ class ActiveRecord{
     //Get all the records from the table including soft deleted ones
     public static function allWithTrashed() {
         $query = "SELECT * FROM " . static::$table;
-        return self::consultSQL($query);
+        return self::SQLWithTrashed($query);
     }
 
+    public static function onlyTrashed() {
+        $query = "SELECT * FROM " . static::$table . " WHERE deleted_at IS NOT NULL";
+        return self::SQLWithTrashed($query);
+    }
+    
     
     // Search by ID
     public static function find($id) {
-    $id = intval($id);
-    $query = "SELECT * FROM " . static::$table . " WHERE id = $id AND deleted_at IS NULL LIMIT 1";
-    $result = self::consultSQL($query);
-    return array_shift($result);
-}
+        $id = intval($id);
+        $query = "SELECT * FROM " . static::$table . " WHERE id = $id LIMIT 1";
+        $result = self::consultSQL($query);
+        return array_shift($result);
+    }
+
     // Find by column and value returning the first match
     public static function findWhere(array $conditions = [], $orderBy = null, $direction = 'ASC') {
         $query = "SELECT * FROM " . static::$table . " WHERE ";
@@ -303,9 +325,6 @@ class ActiveRecord{
             $value = self::$db->escape_string($value);
             $clauses[] = "$column = '$value'";
         }
-
-        // Add soft delete filter
-        $clauses[] = "deleted_at IS NULL";
     
         if (!empty($clauses)) {
             $query .= " WHERE " . implode(" AND ", $clauses);
@@ -336,9 +355,6 @@ class ActiveRecord{
             $clauses[] = "$column = '$value'";
         }
     
-        // Add soft delete condition
-        $clauses[] = "deleted_at IS NULL";
-    
         // Append WHERE if needed
         if (!empty($clauses)) {
             $query .= " WHERE " . implode(" AND ", $clauses);
@@ -358,9 +374,8 @@ class ActiveRecord{
     
     
     
-
     public static function unionTables($table1, $table2){
-        $query = "SELECT * FROM " . $table1 . " UNION SELECT * FROM " . $table2. " WHERE deleted_at IS NULL";
+        $query = "SELECT * FROM " . $table1 . " UNION SELECT * FROM " . $table2;
         $result = self::consultSQL($query);
         return $result;
     }
@@ -376,7 +391,6 @@ class ActiveRecord{
         $orderBy = isset($options['orderBy']) ? self::$db->escape_string($options['orderBy']) : null;
         $direction = strtoupper($options['direction'] ?? 'ASC');
         $limit = $options['limit'] ?? null;
-        $softDeleteOn = $options['softDelete'] ?? null;
     
         $query = "SELECT $select FROM $table1 $type JOIN $table2 ON $table1.$col1 = $table2.$col2";
     
@@ -387,10 +401,6 @@ class ActiveRecord{
                 $value = self::$db->escape_string($value);
                 $clauses[] = "$key = '$value'";
             }
-        }
-    
-        if ($softDeleteOn) {
-            $clauses[] = "$softDeleteOn.deleted_at IS NULL";
         }
     
         if (!empty($clauses)) {
@@ -408,64 +418,80 @@ class ActiveRecord{
         return self::consultSQL($query);
     }
     
+    // Set the timestamps for created_at, updated_at, deleted_at fields
+    protected function setTimestamp($field) {
+        if (in_array($field, static::$columnsDB)) {
+            $this->$field = date('Y-m-d H:i:s');
+        }
+    }
     
  
     //Create a new record in the DB
     public function create() {
-        $this->created_at = date('Y-m-d H:i:s');
-        $this->updated_at = date('Y-m-d H:i:s');
-
+        $this->setTimestamp('created_at');
+        $this->setTimestamp('updated_at');
+    
         $attributes = $this->sanitizeAttributes();
-
-        $query = "INSERT INTO " . static::$table . " (";
-        $query .= join(', ', array_keys($attributes));
-        $query .= ") VALUES ('"; 
-        $query .= join("', '", array_values($attributes));
-        $query .= "')";
-
-        //debugging($query); 
+    
+        $query = "INSERT INTO " . static::$table . " (" . 
+                 join(', ', array_keys($attributes)) . 
+                 ") VALUES ('" . 
+                 join("', '", array_values($attributes)) . "')";
+    
         $result = self::$db->query($query);
+    
         return [
-           'result' =>  $result,
-           'id' => self::$db->insert_id
+            'result' => $result,
+            'id' => self::$db->insert_id
         ];
     }
+    
  
     // Update a record in the DB
     public function update() {
-        $this->updated_at = date('Y-m-d H:i:s');
-
+        $this->setTimestamp('updated_at');
+    
         $attributes = $this->sanitizeAttributes();
-
         $values = [];
-        foreach($attributes as $key => $value) {
+    
+        foreach ($attributes as $key => $value) {
             $values[] = "{$key}='{$value}'";
         }
-
-        $query = "UPDATE " . static::$table ." SET ";
-        $query .=  join(', ', $values );
-        $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
-        $query .= " LIMIT 1 ";
-
-        //debugging($query);
-        $result = self::$db->query($query);
-        return $result;
-    }
- 
-     //Delete a record from the DB
-     public function delete() {
-        $this->deleted_at = date('Y-m-d H:i:s');
-        $attributes = $this->sanitizeAttributes();
     
-        $query = "UPDATE " . static::$table . " SET deleted_at = '" . $attributes['deleted_at'] . "' WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
+        $query = "UPDATE " . static::$table . " SET " . join(', ', $values) .
+                 " WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
+    
         return self::$db->query($query);
     }
+    
+ 
+     //Delete a record from the DB
+    public function delete() {
+        $this->setTimestamp('deleted_at');
+        $attributes = $this->sanitizeAttributes();
+    
+        $query = "UPDATE " . static::$table . 
+                 " SET deleted_at = '" . $attributes['deleted_at'] . "'" .
+                 " WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
+    
+        return self::$db->query($query);
+    }
+    
 
     public function restore() {
         $this->deleted_at = null;
         $query = "UPDATE " . static::$table . " SET deleted_at = NULL WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
         return self::$db->query($query);
     }
+
+    // Permanently delete a record from the DB
+    public function forceDelete() {
+        $query = "DELETE FROM " . static::$table . 
+                 " WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
+    
+        return self::$db->query($query);
+    }
+    
 
      // Upload files or images
      protected function handleFileUpload($field, $filename, $folder) {
@@ -516,8 +542,6 @@ class ActiveRecord{
             $clauses[] = "$key = '$value'";
         }
     
-        $clauses[] = "deleted_at IS NULL";
-    
         $where = '';
         if (!empty($clauses)) {
             $where = " WHERE " . implode(" AND ", $clauses);
@@ -549,8 +573,6 @@ class ActiveRecord{
             $value = self::$db->escape_string($value);
             $clauses[] = "$key = '$value'";
         }
-    
-        $clauses[] = "deleted_at IS NULL";
     
         $where = '';
         if (!empty($clauses)) {
