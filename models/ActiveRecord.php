@@ -3,63 +3,96 @@
 namespace Model;
 
 class ActiveRecord{
-     //Base de Datos
-     protected static $db;
-     protected static $columnsDB = [];
-     protected static $table = '';
- 
-     //Errores - Validación
-     protected static $alerts = [];
+    //Data Base
+    protected static $db;
+    protected static $columnsDB = [];
+    protected static $table = '';
+
+    //Errors - Validation
+    protected static $alerts = [];
+
+    // Eager loading
+    protected static $with = [];
+
+    // Query Builder
+    protected array $builderWheres = [];
+    protected ?string $builderOrderBy = null;
+    protected string $builderDirection = 'ASC';
+    protected ?int $builderLimit = null;
+    protected bool $builderFirst = false;
      
     
-     //Definir la conexión a la BD
-     public static function setDB($database){
-         self::$db = $database;
-     }
+     //Define the connection to the DB
+    public static function setDB($database){
+        self::$db = $database;
+    }
 
-     // Setear un tipo de Alerta
+     // Set an alert messagea and type
     public static function setAlert($type, $message) {
         static::$alerts[$type][] = $message;
     }
 
-    // Obtener las alerts
+    // Get the alerts
     public static function getAlerts() {
         return static::$alerts;
     }
     
-    // Validación que se hereda en modelos
+    // Validations inherited on models
     public function validate() {
         static::$alerts = [];
         return static::$alerts;
-    }
+    }    
 
-    // Consulta SQL para crear un objeto en Memoria (Active Record)
+    // SQL fetch to create objects in memory
     public static function consultSQL($query) {
-        // Consultar la base de datos
+        // Consult the database
         $result = self::$db->query($query);
-        // Iterar los resultados
+        // iterate the results
         $array = [];
         while($registry = $result->fetch_assoc()) {
             $array[] = static::createObject($registry);
         }
-        // liberar la memoria
+        // free memory
         $result->free();
 
-        // retornar los resultados
+        // return the array of objects
         return $array;
     }
 
-    // Crea el objeto en memoria que es igual al de la BD
+    public static function rawQuery($query) {
+        return self::consultSQL($query);
+    }
+
+    public static function query() {
+        return new static;
+    }
+    
+    // use with() to eager load relationships
+    public static function with(...$relations) {
+        static::$with = $relations;
+        return new static;
+    }
+
+    // Creates an object in memory from the DB
     protected static function createObject($registry) {
         $object = new static;
-
-        foreach($registry as $key => $value ) {
-            if(property_exists( $object, $key  )) {
+    
+        foreach ($registry as $key => $value) {
+            if (property_exists($object, $key)) {
                 $object->$key = $value;
             }
         }
+    
+        // Handle eager-loaded relationships
+        foreach (static::$with as $relation) {
+            if (method_exists($object, $relation)) {
+                $object->$relation = $object->$relation();
+            }
+        }
+    
         return $object;
     }
+    
 
     public function attributes() {
         $attributes = [];
@@ -70,7 +103,7 @@ class ActiveRecord{
         return $attributes;
     }
 
-    // Sanitizar los datos antes de guardarlos en la BD
+    // Sanitize the attributes before saving to DB
     public function sanitizeAttributes() {
         $attributes = $this->attributes();
         $sanitized = [];
@@ -80,16 +113,78 @@ class ActiveRecord{
         return $sanitized;
     }
 
-    // Sincroniza BD con Objetos en memoria
-    public function sincronize($args=[]) { 
-        foreach($args as $key => $value) {
-          if(property_exists($this, $key) && !is_null($value)) {
-            $this->$key = trim($value);
-          }
+    // Sincronize the object with the DB
+    public function synchronize($args = []) {
+        foreach ($args as $key => $value) {
+            if (property_exists($this, $key) && !is_null($value)) {
+                // Trim and normalize input
+                $cleaned = trim($value);
+    
+                // Optionally convert ' to ´ if you like your old sText()
+                if (str_contains($cleaned, "'")) {
+                    $cleaned = str_replace("'", "´", $cleaned);
+                }
+    
+                $this->$key = $cleaned;
+            }
         }
     }
+    
+    public function where(string $column, $value) {
+        $this->builderWheres[] = [
+            'column' => self::$db->escape_string($column),
+            'value' => self::$db->escape_string($value)
+        ];
+        return $this;
+    }
+    
+    public function orderBy(string $column, string $direction = 'ASC') {
+        $this->builderOrderBy = self::$db->escape_string($column);
+        $this->builderDirection = strtoupper($direction);
+        return $this;
+    }
+    
+    public function limit(int $limit) {
+        $this->builderLimit = $limit;
+        return $this;
+    }
+    
+    public function first() {
+        $this->builderFirst = true;
+        $this->builderLimit = 1;
+        return $this->get();
+    }
 
-    // Registros - CRUD
+    public function get() {
+        $query = "SELECT * FROM " . static::$table;
+    
+        $clauses = [];
+    
+        foreach ($this->builderWheres as $where) {
+            $clauses[] = "{$where['column']} = '{$where['value']}'";
+        }
+    
+        $clauses[] = "deleted_at IS NULL";
+    
+        if (!empty($clauses)) {
+            $query .= " WHERE " . implode(" AND ", $clauses);
+        }
+    
+        if ($this->builderOrderBy) {
+            $query .= " ORDER BY {$this->builderOrderBy} {$this->builderDirection}";
+        }
+    
+        if ($this->builderLimit !== null) {
+            $query .= " LIMIT {$this->builderLimit}";
+        }
+    
+        $result = self::consultSQL($query);
+    
+        return $this->builderFirst ? array_shift($result) : $result;
+    }
+    
+
+    // Records - CRUD
     public function save() {
         $result = '';
         if(!is_null($this->id)) {
@@ -102,126 +197,233 @@ class ActiveRecord{
         return $result;
     }
 
-    // Obtener todos los Registros
-    public static function all() {
-        $query = "SELECT * FROM " . static::$table . " ORDER BY id DESC";
-        $result = self::consultSQL($query);
-        return $result;
+    public static function exists($column, $value, $exceptId = null): bool {
+        $value = self::$db->escape_string($value);
+        $query = "SELECT COUNT(*) as total FROM " . static::$table .
+                 " WHERE $column = '$value' AND deleted_at IS NULL";
+    
+        if ($exceptId) {
+            $query .= " AND id != " . intval($exceptId);
+        }
+    
+        $result = self::$db->query($query);
+        $row = $result->fetch_assoc();
+    
+        return isset($row['total']) && (int)$row['total'] > 0;
     }
     
-    public static function allOrderBy($order){
-        $query = "SELECT * FROM " . static::$table. " ORDER BY $order";
-        
-        $result = self::consultSQL($query);
+    
+    public static function pluck($column, array $conditions = []) {
+        $query = "SELECT $column FROM " . static::$table;
+        $clauses = [];
+    
+        foreach ($conditions as $key => $value) {
+            $value = self::$db->escape_string($value);
+            $clauses[] = "$key = '$value'";
+        }
+    
+        $clauses[] = "deleted_at IS NULL";
+    
+        $query .= " WHERE " . implode(" AND ", $clauses) . " LIMIT 1";
+    
+        $result = self::$db->query($query);
+        $row = $result->fetch_assoc();
+    
+        return $row[$column] ?? null;
+    }
+    
 
-        return $result;
+    
+    public static function pluckAll($column, array $conditions = [], $orderBy = null, $direction = 'ASC') {
+        $query = "SELECT $column FROM " . static::$table;
+        $clauses = [];
+    
+        foreach ($conditions as $key => $value) {
+            $value = self::$db->escape_string($value);
+            $clauses[] = "$key = '$value'";
+        }
+    
+        $clauses[] = "deleted_at IS NULL";
+    
+        if (!empty($clauses)) {
+            $query .= " WHERE " . implode(" AND ", $clauses);
+        }
+    
+        if ($orderBy) {
+            $orderBy = self::$db->escape_string($orderBy);
+            $query .= " ORDER BY $orderBy " . strtoupper($direction);
+        }
+    
+        $result = self::$db->query($query);
+        $values = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $values[] = $row[$column];
+        }
+    
+        return $values;
     }
 
-    public static function allByCol($col){
-        $query = "SELECT $col FROM " . static::$table;
-        
-        $result = self::consultSQL($query);
-
-        return $result;
-    }
-    public static function allOrderDesc($orden){
-        $query = "SELECT * FROM " . static::$table. " ORDER BY $orden DESC";
-        
-        $result = self::consultSQL($query);
-
-        return $result;
-    }
-
-    public static function allOrderAsc($orden){
-        $query = "SELECT * FROM " . static::$table. " ORDER BY $orden ASC";
-        
-        $result = self::consultSQL($query);
-
-        return $result;
+    // Get all the records from the table
+    public static function all($columns = ['*'], $orderBy = 'id', $direction = 'DESC', $limit = null) {
+        $columnsList = implode(', ', $columns);
+        $query = "SELECT $columnsList FROM " . static::$table . " WHERE deleted_at IS NULL";
+    
+        if ($orderBy) {
+            $query .= " ORDER BY $orderBy " . strtoupper($direction);
+        }
+    
+        if ($limit) {
+            $query .= " LIMIT $limit";
+        }
+    
+        return self::consultSQL($query);
     }
 
-    // Busca un registro por su id
+    //Get all the records from the table including soft deleted ones
+    public static function allWithTrashed() {
+        $query = "SELECT * FROM " . static::$table;
+        return self::consultSQL($query);
+    }
+
+    
+    // Search by ID
     public static function find($id) {
-        $query = "SELECT * FROM " . static::$table  ." WHERE id = ${id}";
+    $id = intval($id);
+    $query = "SELECT * FROM " . static::$table . " WHERE id = $id AND deleted_at IS NULL LIMIT 1";
+    $result = self::consultSQL($query);
+    return array_shift($result);
+}
+    // Find by column and value returning the first match
+    public static function findWhere(array $conditions = [], $orderBy = null, $direction = 'ASC') {
+        $query = "SELECT * FROM " . static::$table . " WHERE ";
+        $clauses = [];
+    
+        foreach ($conditions as $column => $value) {
+            $value = self::$db->escape_string($value);
+            $clauses[] = "$column = '$value'";
+        }
+
+        // Add soft delete filter
+        $clauses[] = "deleted_at IS NULL";
+    
+        if (!empty($clauses)) {
+            $query .= " WHERE " . implode(" AND ", $clauses);
+        }
+
+        $query .= " AND deleted_at IS NULL";
+    
+        if ($orderBy) {
+            $orderBy = self::$db->escape_string($orderBy);
+            $query .= " ORDER BY $orderBy " . strtoupper($direction);
+        }
+    
+        $query .= " LIMIT 1";
+    
         $result = self::consultSQL($query);
-        return array_shift( $result ) ;
+        return array_shift($result);
     }
 
-    // Obtener Registros con cierta cantidad
-    public static function get($limit) {
-        $query = "SELECT * FROM " . static::$table . " ORDER BY id LIMIT ${limit}" ;
-        $result = self::consultSQL($query);
-        return $result;
+    // Find by column and value returning all matches
+    public static function findAllWhere(array $conditions = [], $orderBy = null, $direction = 'ASC', $limit = null) {
+        $query = "SELECT * FROM " . static::$table;
+    
+        $clauses = [];
+    
+        // Apply all where conditions
+        foreach ($conditions as $column => $value) {
+            $value = self::$db->escape_string($value);
+            $clauses[] = "$column = '$value'";
+        }
+    
+        // Add soft delete condition
+        $clauses[] = "deleted_at IS NULL";
+    
+        // Append WHERE if needed
+        if (!empty($clauses)) {
+            $query .= " WHERE " . implode(" AND ", $clauses);
+        }
+    
+        if ($orderBy) {
+            $orderBy = self::$db->escape_string($orderBy);
+            $query .= " ORDER BY $orderBy " . strtoupper($direction);
+        }
+    
+        if ($limit) {
+            $query .= " LIMIT " . intval($limit);
+        }
+    
+        return self::consultSQL($query);
     }
-
-    // Busqueda Where con Columna 
-    public static function where($column, $value) {
-        $query = "SELECT * FROM " . static::$table . " WHERE ${column} = '${value}'";
-        //debugging($query);
-        $result = self::consultSQL($query);
-        return array_shift( $result );
-    }
-
-    // Busqueda Where con Columna 
-    public static function whereAll($column, $value) {
-        $query = "SELECT * FROM " . static::$table . " WHERE ${column} = '${value}'";
-        //debugging($query);
-        $result = self::consultSQL($query);
-        return $result;
-    }
-
-    public static function whereOrdered($column, $value, $col) {
-        $query = "SELECT * FROM " . static::$table . " WHERE ${column} = '${value}'". " ORDER BY ${col} ASC";
-        $result = self::consultSQL($query);
-        return $result;
-    }
-
-    public static function whereAdmin($column, $value, $value2) {
-        $query = "SELECT * FROM " . static::$table . " WHERE ${column} = '${value}' OR ${column} = '${value2}'";
-        $result = self::consultSQL($query);
-        return $result;
-    }
+    
+    
+    
 
     public static function unionTables($table1, $table2){
-        $query = "SELECT * FROM " . $table1 . " UNION SELECT * FROM " . $table2;
+        $query = "SELECT * FROM " . $table1 . " UNION SELECT * FROM " . $table2. " WHERE deleted_at IS NULL";
         $result = self::consultSQL($query);
         return $result;
     }
 
-    public static function innerJoin($table1, $table2, $col1, $col2){
-        $query = "SELECT ".$table1.".*". "FROM " . $table1 . " INNER JOIN " . $table2 . " ON " . $table1 . "." . $col1 . " = " . $table2 . "." . $col2;
-        $result = self::consultSQL($query);
-        return $result;
+    public static function joinTables(array $options) {
+        $type = strtoupper($options['type'] ?? 'INNER');
+        $table1 = self::$db->escape_string($options['table1']);
+        $table2 = self::$db->escape_string($options['table2']);
+        $col1 = self::$db->escape_string($options['col1']);
+        $col2 = self::$db->escape_string($options['col2']);
+        $select = $options['select'] ?? "$table1.*";
+        $where = $options['where'] ?? null;
+        $orderBy = isset($options['orderBy']) ? self::$db->escape_string($options['orderBy']) : null;
+        $direction = strtoupper($options['direction'] ?? 'ASC');
+        $limit = $options['limit'] ?? null;
+        $softDeleteOn = $options['softDelete'] ?? null;
+    
+        $query = "SELECT $select FROM $table1 $type JOIN $table2 ON $table1.$col1 = $table2.$col2";
+    
+        $clauses = [];
+    
+        if ($where && is_array($where)) {
+            foreach ($where as $key => $value) {
+                $value = self::$db->escape_string($value);
+                $clauses[] = "$key = '$value'";
+            }
+        }
+    
+        if ($softDeleteOn) {
+            $clauses[] = "$softDeleteOn.deleted_at IS NULL";
+        }
+    
+        if (!empty($clauses)) {
+            $query .= " WHERE " . implode(' AND ', $clauses);
+        }
+    
+        if ($orderBy) {
+            $query .= " ORDER BY $orderBy $direction";
+        }
+    
+        if ($limit) {
+            $query .= " LIMIT " . intval($limit);
+        }
+    
+        return self::consultSQL($query);
     }
-
-    public static function innerJoinWhere($table1, $table2, $col1, $col2){
-        $query = "SELECT ".$table1.".*". "FROM " . $table1 . " INNER JOIN " . $table2 . " ON " . $table1 . "." . $col1 . " = " . $table2 . "." . $col2 . " WHERE " . $table2 . $col2 . " = " . $col2;
-        $result = self::consultSQL($query);
-        return $result;
-    }
-
-
-    public static function innerJoinAll($table1, $table2, $col1, $col2){
-        $query = "SELECT * FROM " . $table1 . " INNER JOIN " . $table2 . " ON " . $table1 . "." . $col1 . " = " . $table2 . "." . $col2;
-        $result = self::consultSQL($query);
-        return $result;
-    }
+    
+    
  
-    //Crea un nuevo registro
+    //Create a new record in the DB
     public function create() {
-        // Sanitizar los datos
+        $this->created_at = date('Y-m-d H:i:s');
+        $this->updated_at = date('Y-m-d H:i:s');
+
         $attributes = $this->sanitizeAttributes();
 
-        // Insertar en la base de datos
         $query = "INSERT INTO " . static::$table . " (";
         $query .= join(', ', array_keys($attributes));
         $query .= ") VALUES ('"; 
         $query .= join("', '", array_values($attributes));
         $query .= "')";
 
-        //debugging($query); // Descomentar si no funciona algo
-
-        // Resultado de la consulta
+        //debugging($query); 
         $result = self::$db->query($query);
         return [
            'result' =>  $result,
@@ -229,73 +431,195 @@ class ActiveRecord{
         ];
     }
  
-    // Actualizar el registro
+    // Update a record in the DB
     public function update() {
-        // Sanitizar los datos
+        $this->updated_at = date('Y-m-d H:i:s');
+
         $attributes = $this->sanitizeAttributes();
 
-        // Iterar para ir agregando cada campo de la BD
         $values = [];
         foreach($attributes as $key => $value) {
             $values[] = "{$key}='{$value}'";
         }
-        //debugging($attributes);
 
-        // Consulta SQL
         $query = "UPDATE " . static::$table ." SET ";
         $query .=  join(', ', $values );
         $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
         $query .= " LIMIT 1 ";
 
         //debugging($query);
-        // Actualizar BD
         $result = self::$db->query($query);
         return $result;
     }
  
-     //Eliminar un registro
-     public function delete(){        
-         $query = "DELETE FROM ". static::$table ." WHERE id =".self::$db->escape_string($this->id)." LIMIT 1" ;
-         $result = self::$db->query($query);
-         return $result;
-     }
+     //Delete a record from the DB
+     public function delete() {
+        $this->deleted_at = date('Y-m-d H:i:s');
+        $attributes = $this->sanitizeAttributes();
+    
+        $query = "UPDATE " . static::$table . " SET deleted_at = '" . $attributes['deleted_at'] . "' WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
+        return self::$db->query($query);
+    }
 
-     // Subida de archivos
-     public function setImage($image){
-         //Elimina la imagen previa
-         if(!is_null($this->id)){
-             $this->deleteImage();            
-         }
-         //Asignar el nombre de la imagen al atributo
-         if($image){
-             $this->image = $image;
-         }
-     }
+    public function restore() {
+        $this->deleted_at = null;
+        $query = "UPDATE " . static::$table . " SET deleted_at = NULL WHERE id = '" . self::$db->escape_string($this->id) . "' LIMIT 1";
+        return self::$db->query($query);
+    }
 
-     public function setDocument($document){
-        //Elimina el documento previo
-        if(!is_null($this->id)){
-            $this->deleteDocument();            
+     // Upload files or images
+     protected function handleFileUpload($field, $filename, $folder) {
+        if (!is_null($this->id)) {
+            $this->deleteFile($field, $folder);
         }
-        //Asignar el nombre del documento al atributo
-        if($document){
-            $this->document = $document;
+    
+        if ($filename) {
+            $this->$field = $filename;
         }
     }
- 
-     //Eliminar la imagen
-     public function deleteImage(){
-         $existsFile = file_exists(IMAGES_FOLDER . $this->imagen);
-             if($existsFile){
-                 unlink(IMAGES_FOLDER . $this->imagen);
-             } 
-     }
 
-     //Eliminar el archivo
-     public function deleteDocument(){
-        $existsDoc = file_exists(DOCS_FOLDER . $this->document);
-        if($existsDoc){
-            unlink(DOCS_FOLDER . $this->document);
-        } 
+    // Delete files or images
+    protected function handleFileDelete($field, $folder) {
+        $filepath = $folder . $this->$field;
+        if (!empty($this->$field) && file_exists($filepath)) {
+            unlink($filepath);
+        }
     }
+
+    public function setFile($file, $field, $folder) {
+        $this->handleFileUpload($field, $file, $folder);
+    }
+    
+    public function deleteFile($field, $folder) {
+        $this->handleFileDelete($field, $folder);
+    }
+
+    public function toArray(array $only = [], array $except = []): array {
+        $array = [];
+    
+        foreach (static::$columnsDB as $column) {
+            if (!empty($only) && !in_array($column, $only)) continue;
+            if (in_array($column, $except)) continue;
+    
+            $array[$column] = $this->$column ?? null;
+        }
+    
+        return $array;
+    }
+
+    public static function paginate($page = 1, $perPage = 10, $conditions = [], $orderBy = 'id', $direction = 'DESC') {
+        $offset = ($page - 1) * $perPage;
+    
+        $clauses = [];
+        foreach ($conditions as $key => $value) {
+            $value = self::$db->escape_string($value);
+            $clauses[] = "$key = '$value'";
+        }
+    
+        $clauses[] = "deleted_at IS NULL";
+    
+        $where = '';
+        if (!empty($clauses)) {
+            $where = " WHERE " . implode(" AND ", $clauses);
+        }
+    
+        $query = "SELECT * FROM " . static::$table . $where .
+                 " ORDER BY $orderBy " . strtoupper($direction) .
+                 " LIMIT $perPage OFFSET $offset";
+    
+        $items = self::consultSQL($query);
+        $total = self::countAll($conditions);
+        $lastPage = ceil($total / $perPage);
+    
+        return [
+            'data' => $items,
+            'pagination' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'last_page' => $lastPage
+            ]
+        ];
+    }
+
+    public static function countAll($conditions = []) {
+        $clauses = [];
+    
+        foreach ($conditions as $key => $value) {
+            $value = self::$db->escape_string($value);
+            $clauses[] = "$key = '$value'";
+        }
+    
+        $clauses[] = "deleted_at IS NULL";
+    
+        $where = '';
+        if (!empty($clauses)) {
+            $where = " WHERE " . implode(" AND ", $clauses);
+        }
+    
+        $query = "SELECT COUNT(*) as total FROM " . static::$table . $where;
+        $result = self::$db->query($query);
+        $row = $result->fetch_assoc();
+    
+        return (int) ($row['total'] ?? 0);
+    }
+    
+
+    // ORM superpowers
+    public function hasMany($relatedClass, $foreignKey, $localKey = 'id') {
+        $relatedTable = new $relatedClass;
+        return $relatedClass::findAllWhere([
+            $foreignKey => $this->$localKey
+        ]);
+    }
+
+    public function belongsTo($relatedClass, $foreignKey, $ownerKey = 'id') {
+        $relatedTable = new $relatedClass;
+        return $relatedClass::findWhere([
+            $ownerKey => $this->$foreignKey
+        ]);
+    }
+
+    public function hasOne($relatedClass, $foreignKey, $localKey = 'id') {
+        return $relatedClass::findWhere([
+            $foreignKey => $this->$localKey
+        ]);
+    }
+
+    
+    public function hasManyThrough(
+        $relatedClass,
+        $throughClass,
+        $firstKey,    // foreign key on through table pointing to this model
+        $secondKey,   // foreign key on related table pointing to through table
+        $localKey = 'id',     // this model's PK
+        $relatedLocalKey = 'id'  // through table PK
+    ) {
+        $throughInstances = $throughClass::findAllWhere([
+            $firstKey => $this->$localKey
+        ]);
+    
+        $relatedItems = [];
+    
+        foreach ($throughInstances as $through) {
+            $items = $relatedClass::findAllWhere([
+                $secondKey => $through->$relatedLocalKey
+            ]);
+            $relatedItems = array_merge($relatedItems, $items);
+        }
+    
+        return $relatedItems;
+    }
+
+    public function morphTo($typeField = 'commentable_type', $idField = 'commentable_id') {
+        $modelClass = $this->$typeField;
+        $modelId = $this->$idField;
+    
+        if (class_exists($modelClass)) {
+            return $modelClass::find($modelId);
+        }
+    
+        return null;
+    }    
+    
 }

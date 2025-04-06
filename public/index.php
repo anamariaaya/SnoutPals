@@ -11,4 +11,3 @@
     $router->get('/', [PublicController::class, 'home']);
 
     $router->checkRoutes();
-?>

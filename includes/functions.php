@@ -1,7 +1,20 @@
 <?php
 
-define('IMAGES_FOLDER', $_SERVER['DOCUMENT_ROOT'].'/images/');
-define('DOCS_FOLDER', $_SERVER['DOCUMENT_ROOT'].'/docs/');
+//Uploads path
+define('UPLOADS_PATH', $_SERVER['DOCUMENT_ROOT'].'/uploads/');
+define('PETS_IMAGES_PATH', UPLOADS_PATH . 'pets/');
+define('VETS_IMAGES_PATH', UPLOADS_PATH . 'vets/');
+define('OWNERS_IMAGES_PATH', UPLOADS_PATH . 'owners/');
+define('DOCS_PATH', UPLOADS_PATH . 'documents/');
+
+
+//Resources path
+define('RESOURCES_PATH', $_SERVER['DOCUMENT_ROOT'].'/resources/');
+define('PLACEHOLDER_PATH', RESOURCES_PATH . 'placeholder/');
+define('PDF_TEMPLATES_PATH', RESOURCES_PATH . 'pdf/');
+define('EMAIL_TEMPLATES_PATH', RESOURCES_PATH . 'emails/');
+define('CONTRACTS_PATH', RESOURCES_PATH . 'contracts/');
+
 
 //Función para imprimir el código a probar y detener la ejecución del código siguiente
 function debugging($variable) : string {
@@ -13,16 +26,15 @@ function debugging($variable) : string {
 
 // Escapa / Sanitizar el HTML
 function s($html) : string {
-    $s = htmlspecialchars($html);
-    return $s;
+    return htmlspecialchars((string) $html ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-function sText($var) : string{
-    if(str_contains($var, "'") === true){
-        $var = str_replace("'", "´", $var);
-    }
-    return $var;
+
+function cleanText($value) : string {
+    $value = trim((string) $value);
+    return str_replace("'", "´", $value);
 }
+
 
 function redirection(string $url){
     $id = s($_GET['id']);
