@@ -173,35 +173,98 @@ Re-run all migrations with:
     /controllers         
     /Core               → Base classes (DB, Router, ActiveRecord)
     /database
-        /migrations       → Table creation & schema changes
-        /seeders          → Default data insertions
+    ├── /migrations       → Table creation & schema changes
+    └── /seeders          → Default data insertions
     /helpers
     /includes           → Core helpers (DB.php, app.php, functions.php)
     /models
     /public             → Public index.php + assets
-        /build
-            /css
-            /img
-            /js
-        /uploads
-            /documents
-            /owners
-            /pets
-            /vets
+    ├───/build
+    │   ├── /css
+    │   ├── /img
+    │   ├── /js
+    └── /uploads
+        ├── /documents
+        ├── /owners
+        ├── /pets
+        └── /vets
     /resources
-        /APIResources
-        /contracts
-        /emails
-        /pdf
-        /placeholders
+    ├── /APIResources
+    ├── /contracts
+    ├── /emails
+    ├── /pdf
+    └── /placeholders
     /src
-        /images
-        /js
-        /scss
+    ├── /images
+    ├── /js
+    └── /scss
+            ├── base/
+            │   ├── _globals.scss          → Body, html, headings, etc.
+            │   ├── _index.scss            → Imports everything from base
+            │   ├── _reset.scss            → Clean base styles (if you want to replace normalize)
+            │   └── _utilities.scss        → Auto-generated helpers (.m-2, .text-center)
+            │
+            ├── components/
+            │   ├── _alerts.scss
+            │   ├── _buttons.scss
+            │   ├── _cards.scss
+            │   ├── _forms.scss
+            │   ├── _index.scss
+            │   └── _modals.scss
+            │
+            ├── layout/
+            │   ├── _admin-header.scss
+            │   ├── _admin-footer.scss
+            │   ├── _admin-sidebar.scss
+            │   ├── _footer.scss
+            │   ├── _header.scss
+            │   ├── _index.scss
+            │   ├── _pets-header.scss
+            │   ├── _pets-footer.scss
+            │   ├── _pets-sidebar.scss
+            │   ├── _vets-header.scss
+            │   ├── _vets-footer.scss
+            │   └── _vets-sidebar.scss
+            │
+            ├── main-pages/
+            │   ├── _home.scss             → Custom Home styles
+            │   └── _index.scss   
+            │
+            ├── mixins/
+            │   ├── _buttons.scss          → Button generator
+            │   ├── _cards.scss            → Cards generator
+            │   ├── _grid.scss             → Grid system
+            │   ├── _index.scss         → Button generator
+            │   └── _media.scss            → All media query mixins
+            │
+            │
+            ├── pet-pages/
+            │   ├── _dashboard.scss             → Custom pet-owners dashboard styles
+            │   └── _index.scss   
+            │
+            ├── tokens/
+            │   ├── _colors.scss           → All colors and state colors
+            │   ├── _spacing.scss          → Padding, margins, etc.
+            │   ├── _fonts.scss            → Font families and weights
+            │   ├── _radius.scss           → Border radius tokens
+            │   └── _index.scss            → Imports all token files
+            │
+            ├── layout/
+            │   ├── _header.scss
+            │   ├── _footer.scss
+            │   ├── _sidebar.scss
+            │   └── _index.scss
+            │
+            ├── vet-pages/
+            │   ├── _dashboard.scss             → Custom vets dashboard styles
+            │   └── _index.scss   
+            │
+            │
+            └── app.scss                   → Imports all index.scss files
     /views
-        /layouts
-        /pages
-        /templates
+    ├── /layouts
+    ├── /pages
+    └── /templates
 
 
 # 🧠 Tips for Team Members
@@ -214,4 +277,4 @@ Re-run all migrations with:
     * Prefer fetch() calls for frontend and toArray() for API responses.
 
 
-Welcome to the team! 🐶💻
+### Welcome to the team! 🐶💻
