@@ -1,0 +1,40 @@
+// Define color map for light mode
+$colors-light: (
+  "charcoal": #404040,
+  "white-soft": #fbf8f4,
+  "peach": #ffe0d8,
+  "blue-light": #e0ecf0,
+  "sage": #98b59e,
+  "orange": #d47c52,
+  "beige": #f5dfca,
+  "coral": #e8997a,
+  "white": #ffffff,
+  "black": #000000
+);
+
+// Duplicate this when you build your dark mode version
+$colors-dark: (
+  "charcoal": #404040,
+  "white-soft": #fbf8f4,
+  "peach": #ffe0d8,
+  "blue-light": #e0ecf0,
+  "sage": #98b59e,
+  "orange": #d47c52,
+  "beige": #f5dfca,
+  "coral": #e8997a,
+  "white": #ffffff,
+  "black": #000000
+);
+
+// Current theme selector (use $colors-dark if dark mode active)
+$colors: $colors-light;
+
+// color() helper
+@function color($name) {
+  @if map-has-key($colors, $name) {
+    @return map-get($colors, $name);
+  } @else {
+    @warn "Color `#{$name}` not found in $colors map.";
+    @return null;
+  }
+}
