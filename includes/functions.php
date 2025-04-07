@@ -48,11 +48,21 @@ function validateRedirect(string $url){
     return $id;
 }
 
-function isAuth() : void {
-    if(!isset($_SESSION['login'])) {
-        header('Location: /');
+function isAuth(): void {
+    if (!AuthHelper::isLoggedIn()) {
+        if (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json')) {
+            echo ApiResponseHelper::unauthorized();
+        } else {
+            header('Location: /login');
+        }
+        exit;
     }
 }
+
+function isOwner(int $resourceUserId): bool {
+    return AuthHelper::isLoggedIn() && AuthHelper::userId() === $resourceUserId;
+}
+
 
 //Reviews the current page to highlight the menu icon
 function current_page($path){
@@ -69,24 +79,6 @@ function admin_page($path){
         echo 'dashboard__link--current';
     } else{
         return;
-    }
-}
-
-function isAdmin() : void {
-    if(($_SESSION['userLevel'] !== '1')){
-        header('Location: /');
-    }
-}
-
-function isPet() : void {
-    if(($_SESSION['userLevel'] !== '2')){
-        header('Location: /');
-    }
-}
-
-function isVet() : void {
-    if(($_SESSION['userLevel'] !== '3')){
-        header('Location: /');
     }
 }
 
