@@ -106,6 +106,71 @@ Re-run all migrations with:
 ```bash
     php database/migrate.php
 ```
+# 🎨 SCSS Design System
+    We use a SASS-based design system with a fully customizable theme, utility generator, and design tokens.
+
+    ### Tokens Directory (/scss/tokens):
+    _colors.scss → Color palettes with :root + dark mode support (auto & manual)
+
+    _fonts.scss → Font families, weights, sizes
+
+    _spacing.scss → Global spacing tokens ($gap, $separate, etc.)
+
+    _radius.scss → Border radius values
+
+    ### Base (/scss/base):
+    _reset.scss → Clean reset (incl. 62.5% font-size trick for rem)
+
+    _globals.scss → Body, headings, global font styles
+
+    _utilities.scss → Auto-generated spacing utilities:
+
+        * m-1, mt-4, p-20, -mx-10 up to 250
+
+        * Negative margins supported
+
+        * Based on rem
+
+    ### Mixins (/scss/mixins)
+    media.scss → Mobile-first responsive helpers: @include tablet { ... }
+
+    grid.scss → @include grid(3, 2rem)
+
+    buttons.scss, cards.scss, etc.
+
+## 🌗 Dark Mode
+    Dark theme is supported using:
+
+    @media (prefers-color-scheme: dark) for auto switch
+
+    [data-theme="dark"] for manual override
+
+    color($name, $state) SASS function auto-resolves the theme
+
+    ### ✅ Example:
+
+```bash
+    body {
+        background-color: color(brand-8);
+        color: color(brand-8, text);
+    }
+```
+
+## 🧠 CSS Utilities
+Generated in base/_utilities.scss:
+
+```bash 
+<div class="m-8 px-10 -mb-5">...</div>
+```
+
+* Full margin & padding shorthands
+
+* 0rem to 250rem, steps 1rem
+
+* Can be purged if needed
+
+# 🧩 JS & Assets
+(Coming soon)
 
 # 🧰 Available Helpers
 ## 🔒 Auth & Session Helpers
@@ -235,7 +300,8 @@ Re-run all migrations with:
             │   ├── _cards.scss            → Cards generator
             │   ├── _grid.scss             → Grid system
             │   ├── _index.scss         → Button generator
-            │   └── _media.scss            → All media query mixins
+            │   ├── _media.scss            → All media query mixins
+            │   └── _text.scss            → All text styles
             │
             │
             ├── pet-pages/
@@ -244,10 +310,11 @@ Re-run all migrations with:
             │
             ├── tokens/
             │   ├── _colors.scss           → All colors and state colors
-            │   ├── _spacing.scss          → Padding, margins, etc.
             │   ├── _fonts.scss            → Font families and weights
+            │   ├── _index.scss            → Imports all token files
             │   ├── _radius.scss           → Border radius tokens
-            │   └── _index.scss            → Imports all token files
+            │   ├── _screens.scss          → Screen sizes for media queries
+            │   └── _spacing.scss          → Padding, margins, etc.
             │
             ├── layout/
             │   ├── _header.scss
@@ -277,4 +344,4 @@ Re-run all migrations with:
     * Prefer fetch() calls for frontend and toArray() for API responses.
 
 
-### Welcome to the team! 🐶💻
+### Welcome to the team! 🐱🐶💻
