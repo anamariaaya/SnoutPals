@@ -1,0 +1,36 @@
+@use '../tokens/spacing' as s;
+@use '../tokens/breakpoints' as b;
+@use './media' as *;
+
+/* ========================
+   GRID MIXINS
+======================== */
+
+// Basic grid with customizable columns & spacing
+@mixin grid($columns, $spacing: s.$gap) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $spacing;
+}
+
+// Responsive grid using minmax and auto-fit
+@mixin responsiveGrid($min: 25rem, $gap: s.$gap) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat(auto-fit, minmax($min, 1fr));
+}
+
+// Responsive grid that changes layout at breakpoints
+@mixin gridResponsive($mobile, $tablet, $desktop, $gap: s.$gap) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat($mobile, 1fr);
+
+  @include min(tablet) {
+    grid-template-columns: repeat($tablet, 1fr);
+  }
+
+  @include min(desktop) {
+    grid-template-columns: repeat($desktop, 1fr);
+  }
+}

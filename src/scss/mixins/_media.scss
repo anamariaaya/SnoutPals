@@ -1,83 +1,24 @@
-@mixin phone {
-    @media (min-width: #{calc(v.$phone + 1px)}) {
-        @content;
+@use 'sass:map';
+@use '../tokens/breakpoints' as b;
+
+// Min-width media query
+@mixin min($key) {
+  @if map.has-key(b.$breakpoints, $key) {
+    @media (min-width: map.get(b.$breakpoints, $key)) {
+      @content;
     }
+  } @else {
+    @warn "⚠️ Breakpoint `#{$key}` not found in $breakpoints map.";
+  }
 }
 
-@mixin midscreen {
-    @media (min-width: #{calc(v.$midscreen + 1px)}) {
-        @content;
+// Max-width media query
+@mixin max($key) {
+  @if map.has-key(b.$breakpoints-max, $key) {
+    @media (max-width: map.get(b.$breakpoints-max, $key)) {
+      @content;
     }
-}
-
-@mixin tablet {
-    @media (min-width: #{calc(v.$tablet + 1px)}) {
-        @content;
-    }
-}
-
-@mixin laptop{
-    @media (min-width: #{calc(v.$laptop + 1px)}) {
-        @content;
-    }
-}
-  
-@mixin desktop {
-    @media (min-width: #{calc(v.$desktop + 1px)}) {
-        @content;
-    }
-}
-
-@mixin desktop-large {
-    @media (min-width: #{calc(v.$desktop-large + 1px)}) {
-        @content;
-    }
-}
-
-@mixin ultra-wide {
-    @media (min-width: #{calc(v.$ultra-wide + 1px)}) {
-        @content;
-    }
-}
-
-@mixin maxphone {
-    @media (max-width: #{v.$phone}) {
-        @content;
-    }
-}
-
-@mixin maxmidscreen {
-    @media (max-width: #{v.$midscreen}) {
-        @content;
-    }
-}
-
-@mixin maxtablet {
-    @media (max-width: #{v.$tablet}) {
-        @content;
-    }
-}
-
-@mixin maxlaptop {
-    @media (max-width: #{v.$laptop}) {
-        @content;
-    }
-}
-
-@mixin maxdesktop {
-    @media (max-width: #{v.$desktop}) {
-        @content;
-    }
-}
-
-@mixin maxdesktop-large {
-    @media (max-width: #{v.$desktop-large}) {
-        @content;
-    }
-}
-
-@mixin maxultra-wide {
-    @media (max-width: #{v.$ultra-wide}) {
-        @content;
-    }
+  } @else {
+    @warn "⚠️ Breakpoint `#{$key}` not found in $breakpoints-max map.";
+  }
 }

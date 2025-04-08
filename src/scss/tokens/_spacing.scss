@@ -1,3 +1,9 @@
+@use "sass:map";
+
+/* ========================
+   Spacing Tokens
+======================== */
+
 $spacing-xs: 0.4rem;
 $spacing-sm: 0.8rem;
 $spacing-md: 1.6rem;
@@ -31,3 +37,12 @@ $spacings: (
   10xl: $spacing-10xl
 );
 
+// space() function
+@function space($key) {
+  @if map.has-key($spacings, $key) {
+    @return map.get($spacings, $key);
+  } @else {
+    @warn "⚠️ Spacing token `#{$key}` not found in $spacing map.";
+    @return null;
+  }
+}

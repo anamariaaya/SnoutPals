@@ -2,9 +2,16 @@
 @use 'tokens/fonts' as f;
 @use 'mixins/text' as t;
 
+$transition-ease: all 0.2s ease-in-out;
+
+* {
+  transition: $transition-ease;
+}
+
+
 body{
     font-family: f.font(family, base);
-    //font-weight: f.font(weight, black);
+    font-weight: f.font(weight, black);
     font-size: f.font(size, xxl);
     line-height: f.font(line, normal);
     color: c.color(brand-5, text);

@@ -1,0 +1,14 @@
+@use "../mixins/cards" as k;
+
+.card-profile {
+    @include k.card();
+  }
+  
+  .card-link-cta {
+    @include k.card-link();
+  }
+  
+  .card-dashboard {
+    @include k.card-dash();
+  }
+  

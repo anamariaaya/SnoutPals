@@ -1,0 +1,74 @@
+@mixin modal(
+  $bg: var(--white),
+  $padding: 3rem,
+  $width: 90%,
+  $width-tablet: 50%,
+  $border-width: 0.2rem,
+  $border-color: var(--brand-1),
+  $border-style: solid
+) {
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow-y: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  // Add a class to control visibility
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+
+  &.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  &__modal {
+    background-color: $bg;
+    padding: $padding;
+    width: $width;
+    border-radius: 1rem;
+    border: $border-width $border-style $border-color;
+    position: relative;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+
+    @include tablet {
+      width: $width-tablet;
+    }
+  }
+
+  &__icon {
+    color: var(--brand-2);
+    font-size: 2rem;
+    text-align: center;
+
+    @include tablet {
+      font-size: 3rem;
+    }
+  }
+
+  &__paragraph {
+    margin-top: 1rem;
+  }
+
+  &__btn-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2.6rem;
+    background: none;
+    border: none;
+    color: var(--brand-2);
+    cursor: pointer;
+
+    @include tablet {
+      font-size: 4rem;
+    }
+  }
+}

@@ -93,6 +93,9 @@
 
     --white: #ffffff;
     --black: #000000;
+
+    --shadow: rgb(0 0 0 / 19%) 0px 0px 4px, rgb(0 0 0 / 20%) 0px 2px 4px;--shadow-inner:rgb(157, 167, 176) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.321) -3px -3px 6px 1px inset;
+
   }
 }
 
@@ -143,6 +146,10 @@
 
   --white: #000000;
   --black: #ffffff;
+
+  $shadow: rgba(255, 255, 255, 20%) 0px 0px 4px, rgb(255 255 255 / 35%) 0px 2px 4px;
+  $shadow-inner:rgb(71, 75, 78) 3px 3px 6px 0px inset, rgba(73, 68, 68, 0.321) -3px -3px 6px 1px inset;
+
 }
 
 /* ========================
