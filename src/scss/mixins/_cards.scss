@@ -1,0 +1,50 @@
+@use '../tokens/colors' as c;
+@use '../tokens/radius' as r;
+@use '../tokens/spacing' as s;
+@use './media' as *;
+
+/* ========================
+   CARD MIXINS
+======================== */
+
+// 🔹 Simple card
+@mixin card($bg: c.color(white), $border-color: c.color(brand-1), $border-size: 1rem) {
+  box-shadow: c.color(shadow);
+  background-color: $bg;
+  border-left: $border-size solid $border-color;
+  border-radius: r.radius(md);
+  padding: s.space(md);
+}
+
+// 🔸 Card with hover effect (like a link)
+@mixin card-link($bg: c.color(brand-5), $hover-bg: c.color(brand-6), $border-color: c.color(brand-1)) {
+  box-shadow: c.color(shadow);
+  background-color: $bg;
+  border-left: 1.5rem solid $border-color;
+  border-radius: r.radius(md);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-bg;
+    border-left-color: c.color(brand-1, hover);
+    cursor: pointer;
+  }
+}
+
+// 🛋 Lounge-style card
+@mixin card-dash($bg: c.color(white), $border-color: c.color(brand-2), $hover-border: c.color(brand-2)) {
+  box-shadow: c.color(shadow);
+  background-color: $bg;
+  border-left: 2rem solid $border-color;
+  border-radius: r.radius(lg);
+  padding: s.space(sm);
+
+  @include min(tablet) {
+    padding: s.space(md);
+  }
+
+  &:hover {
+    border-left: 2rem solid $hover-border;
+    cursor: pointer;
+  }
+}

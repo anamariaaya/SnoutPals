@@ -149,7 +149,7 @@ Re-run all migrations with:
 
     ### ✅ Example:
 
-```bash
+```css
     body {
         background-color: color(brand-8);
         color: color(brand-8, text);
@@ -157,17 +157,31 @@ Re-run all migrations with:
 ```
 
 ## 🧠 CSS Utilities
-Generated in base/_utilities.scss:
+    Generated in base/_utilities.scss:
 
-```bash 
+```html 
 <div class="m-8 px-10 -mb-5">...</div>
 ```
 
-* Full margin & padding shorthands
+    * Full margin & padding shorthands
 
-* 0rem to 250rem, steps 1rem
+    * 0rem to 250rem, steps 1rem
 
-* Can be purged if needed
+    * Can be purged if needed
+
+## 🖋 Font Tokens
+    Set in tokens/_fonts.scss
+
+    Family, weight, size, and line-height variables available
+
+    Use font-size: font(size, md);, font-weight: font(weight, bold);, etc.
+
+## 📐 Spacing Utilities
+    Auto-generated via loop from 0rem to 250rem in 1rem steps
+
+    Margin & padding utilities (m-10, pt-5, -mb-20, etc.)
+
+    Add spacing directly to class names in HTML
 
 # 🧩 JS & Assets
 (Coming soon)
@@ -220,13 +234,13 @@ Generated in base/_utilities.scss:
 
     ✅ Example (Inside HTML Form):
 
-    ```bash
+    ```html
         <input type="hidden" name="csrf_token" value="<?php echo \Helpers\CsrfHelper::getToken(); ?>">
     ```
 
     ✅ Example (In Controller):
 
-    ```bash
+    ```php
         if (!\Helpers\CsrfHelper::checkToken($_POST['csrf_token'])) {
         echo ApiResponseHelper::forbidden('Invalid CSRF token');
         exit;
@@ -299,9 +313,10 @@ Generated in base/_utilities.scss:
             │   ├── _buttons.scss          → Button generator
             │   ├── _cards.scss            → Cards generator
             │   ├── _grid.scss             → Grid system
-            │   ├── _index.scss         → Button generator
+            │   ├── _index.scss            → Button generator
             │   ├── _media.scss            → All media query mixins
-            │   └── _text.scss            → All text styles
+            │   ├── _modals.scss           → Modal mixin
+            │   └── _text.scss             → All text styles
             │
             │
             ├── pet-pages/
@@ -309,11 +324,11 @@ Generated in base/_utilities.scss:
             │   └── _index.scss   
             │
             ├── tokens/
+            │   ├── _breakpoints.scss      → Breakpoints for media queries
             │   ├── _colors.scss           → All colors and state colors
             │   ├── _fonts.scss            → Font families and weights
             │   ├── _index.scss            → Imports all token files
             │   ├── _radius.scss           → Border radius tokens
-            │   ├── _screens.scss          → Screen sizes for media queries
             │   └── _spacing.scss          → Padding, margins, etc.
             │
             ├── layout/
