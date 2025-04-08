@@ -1,40 +1,154 @@
-// Define color map for light mode
-$colors-light: (
-  "charcoal": #404040,
-  "white-soft": #fbf8f4,
-  "peach": #ffe0d8,
-  "blue-light": #e0ecf0,
-  "sage": #98b59e,
-  "orange": #d47c52,
-  "beige": #f5dfca,
-  "coral": #e8997a,
-  "white": #ffffff,
-  "black": #000000
-);
+/* ========================
+   Light Theme (Default)
+======================== */
+:root {
+  --brand-1: #98b59e;
+  --brand-1-hover: #8ca68f;
+  --brand-1-active: #7b9580;
+  --brand-1-text: #ffffff;
 
-// Duplicate this when you build your dark mode version
-$colors-dark: (
-  "charcoal": #404040,
-  "white-soft": #fbf8f4,
-  "peach": #ffe0d8,
-  "blue-light": #e0ecf0,
-  "sage": #98b59e,
-  "orange": #d47c52,
-  "beige": #f5dfca,
-  "coral": #e8997a,
-  "white": #ffffff,
-  "black": #000000
-);
+  --brand-2: #d47c52;
+  --brand-2-hover: #c26f48;
+  --brand-2-active: #a8613e;
+  --brand-2-text: #ffffff;
 
-// Current theme selector (use $colors-dark if dark mode active)
-$colors: $colors-light;
+  --brand-3: #e8997a;
+  --brand-3-hover: #d58868;
+  --brand-3-active: #be7558;
+  --brand-3-text: #ffffff;
 
-// color() helper
-@function color($name) {
-  @if map-has-key($colors, $name) {
-    @return map-get($colors, $name);
-  } @else {
-    @warn "Color `#{$name}` not found in $colors map.";
-    @return null;
+  --brand-4: #ffe0d8;
+  --brand-4-hover: #ffd4cb;
+  --brand-4-active: #ffc6bc;
+  --brand-4-text: #404040;
+
+  --brand-5: #fbf8f4;
+  --brand-5-hover: #f5dfca;
+  --brand-5-active: #e0ecf0;
+  --brand-5-text: #404040;
+
+  --brand-6: #f5dfca;
+  --brand-6-hover: #e0ecf0;
+  --brand-6-active: #d0c4b8;
+  --brand-6-text: #404040;
+
+  --brand-7: #e0ecf0;
+  --brand-7-hover: #d0c4b8;
+  --brand-7-active: #b0a8a0;
+  --brand-7-text: #404040;
+
+  --brand-8: #404040;
+  --brand-8-hover: #3a3a3a;
+  --brand-8-active: #333333;
+  --brand-8-text: #ffffff;
+
+  --white: #ffffff;
+  --black: #000000;
+}
+
+/* ================================
+   Dark Mode – Automatic by browser
+================================= */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-1: #456c59;
+    --brand-1-hover: #3d5b4f;
+    --brand-1-active: #334c43;
+    --brand-1-text: #ffffff;
+
+    --brand-2: #9d583c;
+    --brand-2-hover: #874b32;
+    --brand-2-active: #6f3d29;
+    --brand-2-text: #ffffff;
+
+    --brand-3: #c47763;
+    --brand-3-hover: #aa6553;
+    --brand-3-active: #925444;
+    --brand-3-text: #ffffff;
+
+    --brand-4: #ffcfc2;
+    --brand-4-hover: #fcbeb0;
+    --brand-4-active: #f7ac9b;
+    --brand-4-text: #202020;
+
+    --brand-5: #fbf8f4;
+    --brand-5-hover: #f5dfca;
+    --brand-5-active: #e0ecf0;
+    --brand-5-text: #404040;
+
+    --brand-6: #f5dfca;
+    --brand-6-hover: #e0ecf0;
+    --brand-6-active: #d0c4b8;
+    --brand-6-text: #404040;
+
+    --brand-7: #e0ecf0;
+    --brand-7-hover: #d0c4b8;
+    --brand-7-active: #b0a8a0;
+    --brand-7-text: #404040;
+
+    --brand-8: #ffffff;
+    --brand-8-hover: #3a3a3a;
+    --brand-8-active: #333333;
+    --brand-8-text: #404040;
+
+    --white: #ffffff;
+    --black: #000000;
   }
+}
+
+
+/* ================================
+   Dark Mode – Manual override
+================================= */
+[data-theme='dark'] {
+  --brand-1: #456c59;
+  --brand-1-hover: #3d5b4f;
+  --brand-1-active: #334c43;
+  --brand-1-text: #ffffff;
+
+  --brand-2: #9d583c;
+  --brand-2-hover: #874b32;
+  --brand-2-active: #6f3d29;
+  --brand-2-text: #ffffff;
+
+  --brand-3: #c47763;
+  --brand-3-hover: #aa6553;
+  --brand-3-active: #925444;
+  --brand-3-text: #ffffff;
+
+  --brand-4: #ffcfc2;
+  --brand-4-hover: #fcbeb0;
+  --brand-4-active: #f7ac9b;
+  --brand-4-text: #202020;
+
+  --brand-5: #fbf8f4;
+  --brand-5-hover: #f5dfca;
+  --brand-5-active: #e0ecf0;
+  --brand-5-text: #404040;
+
+  --brand-6: #f5dfca;
+  --brand-6-hover: #e0ecf0;
+  --brand-6-active: #d0c4b8;
+  --brand-6-text: #404040;
+
+  --brand-7: #e0ecf0;
+  --brand-7-hover: #d0c4b8;
+  --brand-7-active: #b0a8a0;
+  --brand-7-text: #404040;
+
+  --brand-8: #ffffff;
+  --brand-8-hover: #3a3a3a;
+  --brand-8-active: #333333;
+  --brand-8-text: #404040;
+
+  --white: #000000;
+  --black: #ffffff;
+}
+
+/* ========================
+   SASS color() helper
+======================== */
+@function color($key, $state: 'base') {
+  $var-name: if($state == 'base', "--#{$key}", "--#{$key}-#{$state}");
+  @return var(#{$var-name});
 }

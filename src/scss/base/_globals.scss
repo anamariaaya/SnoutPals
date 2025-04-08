@@ -1,8 +1,14 @@
+@use 'tokens/colors' as c;
+@use 'tokens/fonts' as f;
+@use 'mixins/text' as t;
+
 body{
-    font-family: "Nunito", sans-serif;
-    font-size: 16px;
-    color: var(--text-color);
-    background-color: var(--background-color);
+    font-family: f.font(family, base);
+    //font-weight: f.font(weight, black);
+    font-size: f.font(size, xxl);
+    line-height: f.font(line, normal);
+    color: c.color(brand-5, text);
+    background-color: c.color(brand-5);
 }
   
 h1, h2, h3, h4, h5, h6 {
