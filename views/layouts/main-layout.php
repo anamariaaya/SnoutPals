@@ -7,7 +7,7 @@
         <meta name="description" content="{% meta_description %}">
         <meta property="og:title" content="Pet App Services - {% home.title %}"> 
 
-        <title>Pet App Services - <?php echo tt($title); ?></title>
+        <title>SnoutPals - <?php echo tt($title); ?></title>
 
         <link href="/build/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="/build/css/app.css"/>
