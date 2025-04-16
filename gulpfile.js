@@ -1,4 +1,5 @@
-import {src, dest, watch, series, parallel} from 'gulp'
+import pkg from 'gulp';
+const {src, dest, watch, series} = pkg;
 import * as dartSass from 'sass'
 import gulpSass from 'gulp-sass'
 import postcss from 'gulp-postcss'
@@ -6,15 +7,19 @@ import autoprefixer from 'autoprefixer'
 import cssnano from 'cssnano'
 import sourcemaps from 'gulp-sourcemaps'
 import plumber from 'gulp-plumber'
-import imagemin from 'gulp-imagemin'
-import cache from 'gulp-cache'
-import webp from 'gulp-webp'
+import cache from 'gulp-cache';
+import imagemin from 'gulp-imagemin';
+import imageminMozjpeg from 'imagemin-mozjpeg';
+import imageminPngquant from 'imagemin-pngquant';
+import imageminSvgo from 'imagemin-svgo';
+
 
 const sass = gulpSass(dartSass);
 
 const path = {
     scss: 'src/scss/**/*.scss',
     js: 'src/js/**/*.js',
+    images: 'src/images/**/*.{jpg,jpeg,png,svg,gif}'
 }
 
 export async function css( done ) {
@@ -34,26 +39,24 @@ export async function js( done ) {
     done();
 }
 
-//transform all images to webp except svg and gif
-export async function versionWebP( done ) {
-    const opts = {
-        quality: 50
-    };
-    src('src/images/**/*.{png,jpg}')
-        .pipe( webp(opts) )
-        .pipe( dest('public/build/img') )
-    done();
+
+export async function images(done) {
+  src('src/images/**/*.{jpg,jpeg,png,svg}')
+    .pipe(
+      imagemin([
+        imageminMozjpeg({ quality: 75, progressive: true }),
+        imageminPngquant({ quality: [0.7, 0.9] }), // PNG quality range
+        imageminSvgo({
+          plugins: [
+            { name: 'removeViewBox', active: false },
+          ],
+        }),
+      ])
+    )
+    .pipe(dest('public/build/img'));
+  done();
 }
 
-export async function images( done ) {
-    const options = {
-        optimizationLevel: 7
-    }
-    src('src/images/**/*.svg')
-        .pipe( cache( imagemin(options) ) )
-        .pipe( dest('public/build/img') )
-    done();
-}
 
 export async function gifImages( done ) {
     src('src/images/**/*.gif')
@@ -61,12 +64,17 @@ export async function gifImages( done ) {
     done();
 }
 
+export function clearCache(done) {
+    return cache.clearAll(done);
+  }
+
 
 
 export async function dev() {
     watch(path.scss, css)
     watch(path.js, js)
+    watch(path.images, images)
 }
 
-export default series( css, js, versionWebP, images, gifImages, dev )
+export default series( css, js, images, gifImages, dev )
  

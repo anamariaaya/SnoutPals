@@ -51,8 +51,9 @@
 
 .container{
   width: 100%;
-  @include m.max(laptop) {
-    width: 100%;
+  @include m.min(laptop) {
+    width: 85%;
+    margin: auto;
   }
 }
 

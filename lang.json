@@ -4,9 +4,29 @@
       "en": "Home",
       "es": "Inicio"
     },
-    "paragraph": {
-      "en": "This is the home page.",
-      "es": "Esta es la página de inicio."
+    "home_link": {
+      "en": "Home",
+      "es": "Inicio"
+    },
+    "about_link": {
+      "en": "About",
+      "es": "Acerca de"
+    },
+    "contact_link": {
+      "en": "Contact",
+      "es": "Contacto"
+    },
+    "login_link": {
+      "en": "Login",
+      "es": "Iniciar sesión"
+    },
+    "register_link": {
+      "en": "Sign up",
+      "es": "Registro"
+    },
+    "logout_link": {
+      "en": "Logout",
+      "es": "Cerrar sesión"
     }
   },
   "api-response": {
