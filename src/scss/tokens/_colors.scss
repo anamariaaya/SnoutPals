@@ -33,13 +33,13 @@
   --brand-5-text-hover: #404040;
 
   --brand-6: #f5dfca;
-  --brand-6-hover: #e0ecf0;
+  --brand-6-hover: #fcdaba;
   --brand-6-active: #d0c4b8;
   --brand-6-text: #404040;
   --brand-6-text-hover: #404040;
 
   --brand-7: #e0ecf0;
-  --brand-7-hover: #d0c4b8;
+  --brand-7-hover: #c9e7f1;
   --brand-7-active: #b0a8a0;
   --brand-7-text: #404040;
   --brand-7-text-hover: #404040;
@@ -85,12 +85,12 @@
     --brand-5-text: #404040;
 
     --brand-6: #f5dfca;
-    --brand-6-hover: #e0ecf0;
+    --brand-6-hover: #c0ad9c;
     --brand-6-active: #d0c4b8;
     --brand-6-text: #404040;
 
     --brand-7: #e0ecf0;
-    --brand-7-hover: #d0c4b8;
+    --brand-7-hover: rgb(189, 182, 175);
     --brand-7-active: #b0a8a0;
     --brand-7-text: #404040;
 
@@ -161,7 +161,7 @@
 /* ========================
    SASS color() helper
 ======================== */
-@function color($key, $state: 'base') {
+@function c($key, $state: 'base') {
   $var-name: if($state == 'base', "--#{$key}", "--#{$key}-#{$state}");
   @return var(#{$var-name});
 }

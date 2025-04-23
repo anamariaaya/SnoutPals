@@ -9,5 +9,6 @@
     session_start();
 
     $router->get('/', [PublicController::class, 'home']);
+    $router->get('/register', [PublicController::class, 'register']);
 
     $router->checkRoutes();

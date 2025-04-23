@@ -19,7 +19,7 @@ $radius: (
 );
 
 // radius() function
-@function radius($key) {
+@function r($key) {
   @if map.has-key($radius, $key) {
     @return map.get($radius, $key);
   } @else {

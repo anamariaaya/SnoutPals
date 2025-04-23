@@ -27,6 +27,76 @@
     "logout_link": {
       "en": "Logout",
       "es": "Cerrar sesión"
+    },
+    "pets_section":{
+      "en": "I'm a pet owner",
+      "es": "Tengo una mascota"
+    },
+    "vets_section":{
+      "en": "I'm a veterinarian",
+      "es": "Soy veterinario"
+    }
+  },
+  "register":{
+    "title": {
+      "en": "Register",
+      "es": "Registro"
+    },
+    "name_label": {
+      "en": "Name",
+      "es": "Nombre"
+    },
+    "name_placeholder": {
+      "en": "Enter your name",
+      "es": "Ingresa tu nombre"
+    },
+    "lastname_label": {
+      "en": "Last Name",
+      "es": "Apellido"
+    },
+    "lastname_placeholder": {
+      "en": "Enter your last name",
+      "es": "Ingresa tu apellido"
+    },
+    "email_label": {
+      "en": "Email",
+      "es": "Correo electrónico"
+    },
+    "email_placeholder": {
+      "en": "Enter your email",
+      "es": "Ingresa tu correo electrónico"
+    },
+    "email_invalid": {
+      "en": "Invalid email format.",
+      "es": "Formato de correo electrónico no válido."
+    },
+    "email_taken": {
+      "en": "Email already taken.",
+      "es": "El correo electrónico ya está en uso."
+    },
+    "password_label": {
+      "en": "Password",
+      "es": "Contraseña"
+    },
+    "confirm_password_label": {
+      "en": "Confirm Password",
+      "es": "Confirmar contraseña"
+    },
+    "register_button": {
+      "en": "Create account",
+      "es": "Crear cuenta"
+    },
+    "already_have_account": {
+      "en": "Already have an account?",
+      "es": "¿Ya tienes una cuenta?"
+    },
+    "login_link": {
+      "en": "Login",
+      "es": "Iniciar sesión"
+    },
+    "forgot_password_link": {
+      "en": "Forgot password?",
+      "es": "¿Olvidaste tu contraseña?"
     }
   },
   "api-response": {

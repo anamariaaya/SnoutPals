@@ -2,7 +2,7 @@
     <div class="header__container container">
         <img class="header__logo" src="/build/img/logo.png" alt="Logo" />
         <nav class="header__nav">
-            <ul>
+            <ul class="header__nav--list">
                 <?php if(!isset($init)):?>
                     <li class="header__nav--link"><a href="/"><?php echo tt('home.home_link');?></a></li>
                 <?php endif; ?>
@@ -16,25 +16,23 @@
                         <li class="header__nav--link"><a href="/register"><?php echo tt('home.register_link');?></a></li>
                     <?php endif; ?>
                 <?php endif; ?>
+            </ul>
+
+            <div class="header__nav--extra">
                 <div class="header__lang">
                     <div class="header__select no-display" id="language">
                         <button class="header__lang--btn btn-lang" value="en">English</button>
                         <button class="header__lang--btn btn-lang" value="es">Español</button>
                     </div>
                 </div>
+
                 <div class="header__theme" id="theme-toggle">
                 </div>
-                <div class="header__nav--mobile only--tablet">
+                
+                <div class="header__nav--mobile only--tablet only--mobile">
                     <i class="fa-solid fa-bars" id="btnMenu"></i>
                 </div>
-
-            </ul>
+            </div>
         </nav>
-        <div>
-
-            
-
-            
-        </div>
     </div>
 </header>

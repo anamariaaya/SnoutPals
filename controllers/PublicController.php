@@ -12,5 +12,12 @@ class PublicController {
             'init' => $init
         ]);
     }
+
+    public static function register(Router $router) {
+        $title = 'register.title';
+        $router->render('pages/public/register',[
+            'title' => $title
+        ]);
+    }
 }
 

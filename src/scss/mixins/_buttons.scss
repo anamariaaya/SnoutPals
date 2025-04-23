@@ -1,12 +1,15 @@
+@use 'tokens/colors' as c;
+@use 'mixins/media' as m;
+
 @mixin button(
   $variant: 'primary',
   $size: 'md',
   $with-icon: false
 ) {
   // Default values from tokens
-  $bg: var(--brand-1);
-  $text: var(--brand-1-text);
-  $hover: var(--brand-1-hover);
+  $bg: c.c(brand-1);
+  $text: c.c(brand-1, text);
+  $hover: c.c(brand-1, hover);
   $padding: 1rem 3rem;
   $font-size: 1.4rem;
   $radius: 1rem;
@@ -61,6 +64,11 @@
   &:hover {
     background-color: $hover;
     transform: scale(1.03);
+  }
+
+  @include m.max(tablet) {
+    width: 100%;
+    text-align: center;
   }
 
   svg, i {
