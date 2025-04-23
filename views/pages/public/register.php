@@ -5,7 +5,7 @@
         <form id="register-form" class="form" method="POST">
             <div class="form__group">
                 <label class="form__group__label" for="name">{%register.name_label%}</label>
-                <input class="form__group__input" type="text" id="name" name="name" placeholder="{%register.name_placeholder%}" required />
+                <input class="form__group__input" type="text" id="name-register" name="name" placeholder="{%register.name_placeholder%}" required />
             </div>
 
             <div class="form__group">

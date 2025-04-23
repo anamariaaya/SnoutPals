@@ -1,7 +1,14 @@
+
 import { showMessage } from '../base/alerts.js'; // optional if you want to display feedback nicely
-import { confirmPassword, email, form, lastname, name, password } from './selectors.js';
+import { form } from './selectors.js';
 
 export function validateRegisterForm() {
+
+  const name = form.querySelector('#name');
+  const lastname = form.querySelector('#lastname');
+  const email = form.querySelector('#email');
+  const password = form.querySelector('#password');
+  const confirmPassword = form.querySelector('#confirm-password');
 
     function validateField(field, type = 'text') {
         const value = field.value.trim();

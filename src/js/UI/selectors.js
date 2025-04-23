@@ -16,8 +16,3 @@ export const actionsVets = document.getElementById('banner-actions-vets');
 
 //Register selectors
 export const form = document.querySelector('#register-form');
-export const name = form.querySelector('#name');
-export const lastname = form.querySelector('#lastname');
-export const email = form.querySelector('#email');
-export const password = form.querySelector('#password');
-export const confirmPassword = form.querySelector('#confirm-password');

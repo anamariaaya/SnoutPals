@@ -1,6 +1,6 @@
 import { chooseLang } from './language.js';
 import { validateRegisterForm } from './register.js';
-import { waveBtnPet } from './selectors.js';
+import { form, waveBtnPet } from './selectors.js';
 import { toggleTheme, menuResponsive, bannerWave } from './UI.js';
 
 export default class App {
@@ -16,7 +16,9 @@ export default class App {
       if(waveBtnPet && waveBtnPet){
               bannerWave();
       }
-      validateRegisterForm();
+      if(form){
+        validateRegisterForm();
+      }
       // - Language picker
       // - Responsive nav
       // - Fetch onboarding data, etc.
