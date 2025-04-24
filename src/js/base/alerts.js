@@ -1,8 +1,14 @@
 // base/alerts.js
 
-export function showMessage(type, message, container) {
+export function showMessage(type = 'info', message = '', container = document.body) {
     const alert = document.createElement('div');
-    alert.classList.add('alert', `alert--${type}`);
+    alert.classList.add('alert');
+
+    // Add safe class name
+    if (['success', 'error', 'info', 'warning'].includes(type)) {
+        alert.classList.add(`alert--${type}`);
+    }
+
     alert.textContent = message;
 
     const existing = container.querySelector('.alert');
@@ -10,8 +16,8 @@ export function showMessage(type, message, container) {
 
     container.prepend(alert);
 
-    // Auto-dismiss after 4s
     setTimeout(() => {
         alert.remove();
     }, 4000);
 }
+

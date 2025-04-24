@@ -13,6 +13,7 @@ class Migration_20250407_02_create_users_table {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             deleted_at DATETIME DEFAULT NULL,
+            confirmed_at DATETIME DEFAULT NULL,
             FOREIGN KEY (role_id) REFERENCES roles(id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;");
     }

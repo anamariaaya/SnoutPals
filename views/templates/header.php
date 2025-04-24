@@ -1,6 +1,8 @@
 <header class="header">
     <div class="header__container container">
-        <img class="header__logo" src="/build/img/logo.png" alt="Logo" />
+        <a href="/">
+            <img class="header__logo" src="/build/img/logo.png" alt="Logo" />
+        </a>
         <nav class="header__nav">
             <ul class="header__nav--list">
                 <?php if(!isset($init)):?>

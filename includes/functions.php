@@ -31,7 +31,7 @@ function s($html) : string {
 
 //Function to clean the text and remove special characters
 function cleanText($value) : string {
-    $value = trim((string) $value);
+    $value = trim((string) strtolower($value));
     return str_replace("'", "´", $value);
 }
 
@@ -42,7 +42,7 @@ function validateRedirect(string $url){
     $id = filter_var($id, FILTER_VALIDATE_INT);
 
     if(!$id){
-        header("Location:${url}");
+        header("Location:{$url}");
     }
 
     return $id;

@@ -34,7 +34,7 @@
             flex-direction: column;
             text-align: center;
             z-index: 1;
-            @include m.max(tablet){
+            @include m.max(laptop){
                 position: absolute;
                 top: 0;
                 width: 100%;
@@ -45,13 +45,13 @@
                 opacity: 0;
                 pointer-events: none;
             }
-            @include m.min(tablet){
+            @include m.min(laptop){
                 flex-direction: row;
                 gap: s.s(2xl);
                 justify-content: flex-end;
             }
             &.nav-open{
-                @include m.max(tablet){
+                @include m.max(laptop){
                     display: flex;
                     opacity: 1;
                     pointer-events: all;

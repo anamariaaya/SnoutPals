@@ -15,6 +15,7 @@ class DB
         if (self::$connection->connect_error) {
             die('Database connection failed: ' . self::$connection->connect_error);
         }
+        return self::$connection; // ← add this
     }
 
     public static function query($sql)

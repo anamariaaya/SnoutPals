@@ -128,14 +128,10 @@ class ActiveRecord{
 
     // Sanitize the attributes before saving to DB
     public function sanitizeAttributes() {
-        $attributes = $this->attributes();
-        $sanitized = [];
-        foreach($attributes as $key => $value ) {
-            $sanitized[$key] = self::$db->escape_string($value);
-        }
-        return $sanitized;
+        return $this->attributes(); // leave escaping to the `create()` method now
     }
-
+    
+  
     // Sincronize the object with the DB
     public function synchronize($args = []) {
         foreach ($args as $key => $value) {
@@ -433,20 +429,24 @@ class ActiveRecord{
     
         $attributes = $this->sanitizeAttributes();
     
-        $query = "INSERT INTO " . static::$table . " (" . 
-                 join(', ', array_keys($attributes)) . 
-                 ") VALUES ('" . 
-                 join("', '", array_values($attributes)) . "')";
+        $columns = implode(', ', array_keys($attributes));
+        $values = implode(', ', array_map(function ($val) {
+            if (is_null($val)) return "NULL";
+            if (is_numeric($val) && (int)$val == $val) return $val;
+            return "'" . self::$db->real_escape_string($val) . "'";
+        }, array_values($attributes)));
+    
+        $query = "INSERT INTO " . static::$table . " ($columns) VALUES ($values)";
     
         $result = self::$db->query($query);
+        $this->id = self::$db->insert_id; // ✅ set it here!
     
         return [
             'result' => $result,
-            'id' => self::$db->insert_id
+            'id' => $this->id
         ];
     }
-    
- 
+
     // Update a record in the DB
     public function update() {
         $this->setTimestamp('updated_at');

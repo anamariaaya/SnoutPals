@@ -1,37 +1,57 @@
 
-import { showMessage } from '../base/alerts.js'; // optional if you want to display feedback nicely
-import { form } from './selectors.js';
+import { showMessage } from '../base/alerts.js';
+import { t } from '../base/functions.js';
+import { form } from '../UI/selectors.js';
 
 export function validateRegisterForm() {
 
-  const name = form.querySelector('#name');
-  const lastname = form.querySelector('#lastname');
-  const email = form.querySelector('#email');
-  const password = form.querySelector('#password');
-  const confirmPassword = form.querySelector('#confirm-password');
+    // const lang = await readLang();
+    // const alerts = await readJSON();
+    const name = form.querySelector('#name');
+    const lastname = form.querySelector('#lastname');
+    const email = form.querySelector('#email');
+    const password = form.querySelector('#password');
+    const confirmPassword = form.querySelector('#confirmPassword');
 
-    function validateField(field, type = 'text') {
+    async function validateField(field, type = 'text') {
         const value = field.value.trim();
         const form = field.closest('form');
+        const fieldName = field.name;
 
         if (!value) {
-            showMessage('error', `${field.name} is required.`, form);
-            return false;
+          const message = await t('input', fieldName) || await t('input', 'generic');
+          showMessage('error', message , form);
+           return false;
         }
 
         if (type === 'text' && /\d/.test(value)) {
-            showMessage('error', `${field.name} should not contain numbers.`, form);
+            const message = await t('input', 'text-not-numbers');
+            showMessage('error', message, form);
             return false;
         }
 
         if (type === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
-            showMessage('error', 'Invalid email address.', form);
+            const message = await t('input', 'invalid-email');
+            showMessage('error', message, form);
             return false;
         }
 
-        if (type === 'password' && value.length < 6) {
-            showMessage('error', 'Password must be at least 6 characters.', form);
-            return false;
+        if (type === 'password') {
+            if (value.length < 8) {
+              const message = await t('input', 'password-length');
+              showMessage('error', message, form);
+              return false;
+            }
+          
+            const hasUppercase = /[A-Z]/.test(value);
+            const hasLowercase = /[a-z]/.test(value);
+            const hasNumber = /[0-9]/.test(value);
+          
+            if (!hasUppercase || !hasLowercase || !hasNumber) {
+              const message = await t('input', 'password-weak');
+              showMessage('error', message, form);
+              return false;
+            }
         }
 
         return true;
@@ -41,15 +61,17 @@ export function validateRegisterForm() {
     lastname.addEventListener('blur', () => validateField(lastname, 'text'));
     email.addEventListener('blur', () => validateField(email, 'email'));
     password.addEventListener('blur', () => validateField(password, 'password'));
+    confirmPassword.addEventListener('blur', () => validateField(confirmPassword, 'password'));
 
-    confirmPassword.addEventListener('blur', () => {
+    confirmPassword.addEventListener('blur', async () => {
         const form = confirmPassword.closest('form');
         if (confirmPassword.value !== password.value) {
-            showMessage('error', 'Passwords do not match.', form);
+            const message = await t('input', 'passwords-not-match');
+            showMessage('error', message, form);
         }
     });
 
-    console.log('Form is valid! Submit via fetch() or axios...');
+    registerHandler();
 }
 
 
@@ -65,41 +87,82 @@ export function registerHandler() {
     const lastname = form.lastname.value.trim();
     const email = form.email.value.trim();
     const password = form.password.value;
-    const confirmPassword = form['confirm-password'].value;
+    const confirmPassword = form.confirmPassword.value;
+    const honeypot = form.honeypot.value; // Honeypot field
+
 
     if (password !== confirmPassword) {
-      showMessage('Passwords do not match', 'error'); // or alert()
+        const message = await t('input', 'passwords-not-match');
+        showMessage('error', message, form);
       return;
     }
 
     const formData = {
-      name,
-      lastname,
-      email,
-      password
+        name,
+        lastname,
+        email,
+        password,
+        confirmPassword,
+        honeypot
     };
+    console.log(formData);
 
     try {
-      const res = await fetch('/api/auth/register.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+        const role = new URLSearchParams(window.location.search).get('role');
 
-      const data = await res.json();
+        if (!role || (role !== '2' && role !== '3')) {
+          showMessage('Invalid role detected.', 'error');
+          return;
+        }
+        
+        const res = await fetch(`/api/auth/register?role=${role}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const text = await res.text(); // get raw response
+        console.log('Raw response:', text);
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong.');
-      }
+         // Detect HTML error response
+        if (text.startsWith('<')) {
+            showMessage('error', await t('server', 'unexpected-error'), form);
+            return;
+        }
 
-      showMessage('Account created successfully!', 'success'); // or redirect
-      form.reset();
-      // optionally: window.location.href = '/login';
+        let data;
+        try {
+        data = JSON.parse(text);
+        } catch (parseError) {
+            showMessage('error', await t('server', 'unexpected-error'), form);
+            return;
+        }
+
+        if (!res.ok || data.status !== 'success') {
+            const message = data.message || await t('server', 'registratrion-failed');
+            showMessage('error', message, form);
+            return;
+        }
+
+        // ✳️ Show error if response is not ok
+        if (!res.ok || data.status !== 'success') {
+        const message = data.message || await t('server', 'registratrion-failed');
+        showMessage('error', message, form);
+        return;
+        }
+
+        // ✅ Success
+        showMessage('success', data.message || await t('server', 'user-created'), form);
+        form.reset();
+        setTimeout(() => {
+            window.location.href = '/account-created'; 
+        }, 650);
+       
 
     } catch (err) {
-      showMessage(err.message, 'error');
+        showMessage('error', err.message, form);
     }
   });
 }

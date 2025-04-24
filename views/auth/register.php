@@ -1,3 +1,4 @@
+
 <section class="register mt-5">
     <div class="card-form">
         <h1 class="register__title">Create an Account</h1>
@@ -5,7 +6,7 @@
         <form id="register-form" class="form" method="POST">
             <div class="form__group">
                 <label class="form__group__label" for="name">{%register.name_label%}</label>
-                <input class="form__group__input" type="text" id="name-register" name="name" placeholder="{%register.name_placeholder%}" required />
+                <input class="form__group__input" type="text" id="name" name="name" placeholder="{%register.name_placeholder%}" required />
             </div>
 
             <div class="form__group">
@@ -24,9 +25,11 @@
             </div>
 
             <div class="form__group">
-                <label class="form__group__label" for="confirm-password">{%register.confirm_password_label%}</label>
-                <input class="form__group__input" type="password" id="confirm-password" name="confirm-password" required />
+                <label class="form__group__label" for="confirmPassword">{%register.confirm_password_label%}</label>
+                <input class="form__group__input" type="password" id="confirmPassword" name="confirmPassword" required />
             </div>
+            
+            <input type="text" name="honeypot" style="display:none;" id="honeypot" name="honeypot" />
 
             <button type="submit" class="btn btn--primary">{%register.register_button%}</button>
         </form>

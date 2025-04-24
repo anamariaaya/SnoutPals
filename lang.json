@@ -97,6 +97,60 @@
     "forgot_password_link": {
       "en": "Forgot password?",
       "es": "¿Olvidaste tu contraseña?"
+    },
+    "account_created_title": {
+      "en": "Account created successfully.",
+      "es": "Cuenta creada con éxito."
+    },
+    "account_created_message":{
+        "en": "Check your email to verify your account.",
+        "es": "Revisa tu correo electrónico para verificar tu cuenta."
+    },
+    "account_created_button": {
+      "en": "Go to login",
+      "es": "Ir a iniciar sesión"
+    },
+    "email_footer":{
+        "en": "If you did not create an account, please ignore this email.",
+        "es": "Si no creaste una cuenta, por favor ignora este correo."
+    }
+  },
+  "user_alerts":{
+    "name_required": {
+      "en": "Name is required.",
+      "es": "El nombre es requerido."
+    },
+    "lastname_required": {
+      "en": "Last name is required.",
+      "es": "El apellido es requerido."
+    },
+    "email_required": {
+      "en": "Email is required.",
+      "es": "El correo electrónico es requerido."
+    },
+    "password_required": {
+      "en": "Password is required.",
+      "es": "La contraseña es requerida."
+    },
+    "email_invalid": {
+      "en": "Invalid email format.",
+      "es": "Formato de correo electrónico no válido."
+    },
+    "password_length": {
+      "en": "Password must be at least 8 characters long.",
+      "es": "La contraseña debe tener al menos 8 caracteres."
+    },
+    "password_weak": {
+      "en": "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+      "es": "La contraseña debe tener al menos una mayúscula, una minúscula y un número"
+    },
+    "user_created": {
+      "en": "User created successfully.",
+      "es": "Usuario creado con éxito."
+    },
+    "user_exists": {
+        "en": "User already exists.",
+        "es": "El usuario ya existe."
     }
   },
   "api-response": {
@@ -123,6 +177,26 @@
     "not_found": {
       "en": "Resource not found.",
       "es": "Recurso no encontrado."
+    },
+    "invalid_role": {
+        "en": "Invalid role.",
+        "es": "Rol no válido."
+    },
+    "bot_detected": {
+        "en": "Bot detected.",
+        "es": "Bot detectado."
+    },
+    "user_exists": {
+        "en": "User already exists.",
+        "es": "El usuario ya existe."
+    },
+    "user_save_error": {
+        "en": "Error saving user.",
+        "es": "Error al guardar el usuario."
+    },
+    "token_save_error": {
+        "en": "Error saving token.",
+        "es": "Error al guardar el token."
     }
   }
 }
