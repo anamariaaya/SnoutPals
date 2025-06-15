@@ -1,0 +1,62 @@
+{
+    "input": {
+        "generic": {
+            "en": "You must complete this field",
+            "es": "Debes completar este campo"
+        },
+        "name": {
+            "en": "Name is required",
+            "es": "El nombre es requerido"
+        },
+        "lastname": {
+            "en": "Last name is required",
+            "es": "El apellido es requerido"
+        },
+        "email": {
+            "en": "Email is required",
+            "es": "El correo electrónico es requerido"
+        },
+        "password": {
+            "en": "Password is required",
+            "es": "La contraseña es requerida"
+        },
+        "confirmPassword": {
+            "en": "Confirm password is required",
+            "es": "La confirmación de la contraseña es requerida"
+        },
+        "text-not-numbers": {
+            "en": "Only letters are allowed",
+            "es": "Solo se permiten letras"
+        },
+        "invalid-email": {
+            "en": "Invalid email format",
+            "es": "Formato de correo electrónico inválido"
+        },
+        "passwords-not-match": {
+            "en": "Passwords do not match",
+            "es": "Las contraseñas no coinciden"
+        },
+        "password-length": {
+            "en": "Password must be at least 8 characters long",
+            "es": "La contraseña debe tener al menos 8 caracteres"
+        },
+        "password-weak": {
+            "en": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+            "es": "La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número"
+        }
+    },
+    "server":{
+        "unexpected-error": {
+            "en": "An unexpected error occurred",
+            "es": "Ocurrió un error inesperado"
+        },
+        "registratrion-failed": {
+            "en": "Registration failed",
+            "es": "El registro falló"
+        },
+        "user-created": {
+            "en": "User created successfully",
+            "es": "Usuario creado con éxito"
+        }
+    }
+}

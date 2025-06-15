@@ -1,22 +1,22 @@
 @use '../mixins/buttons' as b;
 
-.btn-primary {
+.btn--primary {
     @include b.button('primary');
-  }
+}
   
-  .btn-secondary {
+.btn--secondary {
     @include b.button('secondary');
-  }
+}
   
-  .btn-outline {
+.btn--outline {
     @include b.button('outline');
-  }
+}
   
-  .btn-danger {
+.btn--danger {
     @include b.button('danger', 'lg');
-  }
+}
   
-  .btn-icon {
+.btn--icon {
     @include b.button('primary', 'md', true);
-  }
+}
   

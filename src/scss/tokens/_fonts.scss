@@ -43,7 +43,7 @@ $line-heights: (
 // --- font() helper ---
 
 
-@function font($type, $key) {
+@function f($type, $key) {
   $map: null;
 
   @if $type == 'family' {

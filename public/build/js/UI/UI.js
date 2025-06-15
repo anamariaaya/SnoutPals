@@ -1,30 +1,42 @@
-import {themeToggle} from './selectors.js';
+import {actionsPets, actionsVets, menuBtn, menuBtnIcon, nav, themeToggle, waveBtnPet, waveBtnVet} from './selectors.js';
 
 export function toggleTheme() {
-    window.addEventListener('DOMContentLoaded', () => {
-        // Add a class that enables transitions **after** the first paint
-        setTimeout(() => {
-          document.body.classList.add('theme-transition');
-        }, 100);
-      });
+    const currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
-      
-    // 1️⃣ Get saved theme OR use system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const defaultTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    themeToggle.style.backgroundPosition = currentTheme === 'dark' ? 'left' : 'right';
 
-    // 2️⃣ Apply theme
-    document.body.dataset.theme = defaultTheme;
-    themeToggle.style.backgroundPosition = defaultTheme === 'dark' ? 'left' : 'right';
-
-    // 3️⃣ Handle toggle click
     themeToggle.addEventListener('click', () => {
-        const currentTheme = document.body.dataset.theme;
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const newTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+            document.body.dataset.theme = newTheme;
+            localStorage.setItem('theme', newTheme);
 
-        document.body.dataset.theme = newTheme;
-        localStorage.setItem('theme', newTheme);
-        themeToggle.style.backgroundPosition = newTheme === 'dark' ? 'left' : 'right';
+            themeToggle.style.backgroundPosition = newTheme === 'dark' ? 'left' : 'right';
+        }
+    );
+
+}
+
+export function menuResponsive() {
+    menuBtn.addEventListener('click', () => {
+        nav.classList.toggle('nav-open');
+        menuBtnIcon.classList.toggle('fa-bars');
+        menuBtnIcon.classList.toggle('fa-xmark');
+    });
+}
+
+
+export function bannerWave() {
+    waveBtnPet.addEventListener('click', () => {
+        waveBtnVet.classList.remove('banner-box--open');
+        waveBtnPet.classList.toggle('banner-box--open');
+        actionsPets.classList.toggle('active');
+        actionsVets.classList.remove('active');
+    });
+
+    waveBtnVet.addEventListener('click', () => {
+        waveBtnPet.classList.remove('banner-box--open');
+        waveBtnVet.classList.toggle('banner-box--open');
+        actionsVets.classList.toggle('active');
+        actionsPets.classList.remove('active');
     });
 }

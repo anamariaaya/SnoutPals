@@ -34,7 +34,7 @@ class Router
         if ( $fn ) {
             call_user_func($fn, $this);
         } else {
-            echo "Páge not found or invalid route";
+            echo "Page not found or invalid route";
             $this->renderJson(['error' => 'Page not found or invalid route'], 404);
         }
     }

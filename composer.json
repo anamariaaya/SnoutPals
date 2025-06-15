@@ -8,7 +8,8 @@
             "Controllers\\" : "./controllers",
             "Model\\" : "./models",
             "Helpers\\": "Helpers/",
-            "Core\\": "Core/"
+            "Core\\": "Core/",
+            "Resources\\Emails\\": "resources/emails/"
         }
     },
     "require": {
@@ -22,5 +23,10 @@
             "name": "Anita Nash Dev",
             "email": "anamariaaya@gmail.com"
         }
-    ]
+    ],
+    "config": {
+        "platform": {
+            "php": "8.3.0"
+        }
+    }
 }

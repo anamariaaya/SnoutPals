@@ -10,10 +10,10 @@ $transition-ease: all 0.1s ease-in-out;
 
 
 body{
-    font-family: f.font(family, base);
-    line-height: f.font(line, normal);
-    color: c.color(brand-5, text);
-    background-color: c.color(brand-5);
+    font-family: f.f(family, base);
+    line-height: f.f(line, normal);
+    color: c.c(brand-5, text);
+    background-color: c.c(brand-5);
     font-size: 1.8rem;
 }
   

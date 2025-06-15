@@ -1,5 +1,7 @@
 <?php
 
+namespace Helpers;
+
 class ApiResponseHelper {
 
     protected static bool $debug = false; // Set to true in dev environment if needed

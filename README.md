@@ -344,9 +344,16 @@ Re-run all migrations with:
             │
             └── app.scss                   → Imports all index.scss files
     /views
+    ├── /auth
+    │   ├── account-created.php
+    │   └── register.php
     ├── /layouts
+    │   └── main-layout.php
     ├── /pages
+    │   └── index.php
     └── /templates
+    │   ├── footer.php
+    │   └── header.php
 
 
 # 🧠 Tips for Team Members

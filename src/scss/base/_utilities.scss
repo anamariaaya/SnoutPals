@@ -133,7 +133,7 @@ ick {
 
 .text-gradient {
   color: transparent !important;
-  background: linear-gradient(90deg, c.color(brand-2), c.color(brand-1));
+  background: linear-gradient(90deg, c.c(brand-2), c.c(brand-1));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -142,12 +142,14 @@ ick {
 }
 
 .only--mobile {
+  display: block;
   @include m.min(tablet) { 
     display: none; 
   }
 }
 
 .only--tablet {
+  display: block;
   @include m.min(laptop) { 
     display: none; 
   }
@@ -169,17 +171,17 @@ ick {
 
 .link {
   text-decoration: none;
-  color: c.color(brand-3);
+  color: c.c(brand-3);
   font-weight: font(weight, bold);
   &:hover {
-    color: c.color(brand-1);
+    color: c.c(brand-1);
   }
 }
 
 .top-page {
-  background-color: c.color(brand-3);
+  background-color: c.c(brand-3);
   position: fixed;
-  color: c.color(brand-3, text);
+  color: c.c(brand-3, text);
   padding: 1rem 1.5rem;
   font-size: 3rem;
   border-radius: 50%;
@@ -207,7 +209,7 @@ ick {
       display: block;
       width: 100%;
       height: 0.2rem;
-      background-color: c.color(brand-5-active);
+      background-color: c.c(brand-5-active);
       margin-top: 1.5rem;
     }
   }

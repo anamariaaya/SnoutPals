@@ -38,7 +38,7 @@ $spacings: (
 );
 
 // space() function
-@function space($key) {
+@function s($key) {
   @if map.has-key($spacings, $key) {
     @return map.get($spacings, $key);
   } @else {
