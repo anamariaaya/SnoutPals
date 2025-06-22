@@ -1,0 +1,203 @@
+{
+  "home": {
+    "title": {
+      "en": "Home",
+      "es": "Inicio"
+    },
+    "home_link": {
+      "en": "Home",
+      "es": "Inicio"
+    },
+    "about_link": {
+      "en": "About",
+      "es": "Acerca de"
+    },
+    "contact_link": {
+      "en": "Contact",
+      "es": "Contacto"
+    },
+    "login_link": {
+      "en": "Login",
+      "es": "Iniciar sesión"
+    },
+    "register_link": {
+      "en": "Sign up",
+      "es": "Registro"
+    },
+    "logout_link": {
+      "en": "Logout",
+      "es": "Cerrar sesión"
+    },
+    "pets_section":{
+      "en": "I'm a pet owner",
+      "es": "Tengo una mascota"
+    },
+    "vets_section":{
+      "en": "I'm a veterinarian",
+      "es": "Soy veterinario"
+    }
+  },
+  "register":{
+    "title": {
+      "en": "Register",
+      "es": "Registro"
+    },
+    "name_label": {
+      "en": "Name",
+      "es": "Nombre"
+    },
+    "name_placeholder": {
+      "en": "Enter your name",
+      "es": "Ingresa tu nombre"
+    },
+    "lastname_label": {
+      "en": "Last Name",
+      "es": "Apellido"
+    },
+    "lastname_placeholder": {
+      "en": "Enter your last name",
+      "es": "Ingresa tu apellido"
+    },
+    "email_label": {
+      "en": "Email",
+      "es": "Correo electrónico"
+    },
+    "email_placeholder": {
+      "en": "Enter your email",
+      "es": "Ingresa tu correo electrónico"
+    },
+    "email_invalid": {
+      "en": "Invalid email format.",
+      "es": "Formato de correo electrónico no válido."
+    },
+    "email_taken": {
+      "en": "Email already taken.",
+      "es": "El correo electrónico ya está en uso."
+    },
+    "password_label": {
+      "en": "Password",
+      "es": "Contraseña"
+    },
+    "confirm_password_label": {
+      "en": "Confirm Password",
+      "es": "Confirmar contraseña"
+    },
+    "register_button": {
+      "en": "Create account",
+      "es": "Crear cuenta"
+    },
+    "already_have_account": {
+      "en": "Already have an account?",
+      "es": "¿Ya tienes una cuenta?"
+    },
+    "login_link": {
+      "en": "Login",
+      "es": "Iniciar sesión"
+    },
+    "forgot_password_link": {
+      "en": "Forgot password?",
+      "es": "¿Olvidaste tu contraseña?"
+    },
+    "account_created_title": {
+      "en": "Account created successfully.",
+      "es": "Cuenta creada con éxito."
+    },
+    "account_created_message":{
+        "en": "Check your email to verify your account.",
+        "es": "Revisa tu correo electrónico para verificar tu cuenta."
+    },
+    "account_created_button": {
+      "en": "Go to login",
+      "es": "Ir a iniciar sesión"
+    },
+    "email_footer":{
+        "en": "If you did not create an account, please ignore this email.",
+        "es": "Si no creaste una cuenta, por favor ignora este correo."
+    }
+  },
+  "user_alerts":{
+    "name_required": {
+      "en": "Name is required.",
+      "es": "El nombre es requerido."
+    },
+    "lastname_required": {
+      "en": "Last name is required.",
+      "es": "El apellido es requerido."
+    },
+    "email_required": {
+      "en": "Email is required.",
+      "es": "El correo electrónico es requerido."
+    },
+    "password_required": {
+      "en": "Password is required.",
+      "es": "La contraseña es requerida."
+    },
+    "email_invalid": {
+      "en": "Invalid email format.",
+      "es": "Formato de correo electrónico no válido."
+    },
+    "password_length": {
+      "en": "Password must be at least 8 characters long.",
+      "es": "La contraseña debe tener al menos 8 caracteres."
+    },
+    "password_weak": {
+      "en": "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+      "es": "La contraseña debe tener al menos una mayúscula, una minúscula y un número"
+    },
+    "user_created": {
+      "en": "User created successfully.",
+      "es": "Usuario creado con éxito."
+    },
+    "user_exists": {
+        "en": "User already exists.",
+        "es": "El usuario ya existe."
+    }
+  },
+  "api-response": {
+    "success": {
+      "en": "Request completed successfully.",
+      "es": "Solicitud completada con éxito."
+    },
+    "error": {
+      "en": "Something went wrong.",
+      "es": "Algo salió mal."
+    },
+    "validation": {
+      "en": "Validation failed.",
+      "es": "La validación falló."
+    },
+    "unauthorized": {
+      "en": "Unauthorized access.",
+      "es": "Acceso no autorizado."
+    },
+    "forbidden": {
+      "en": "Access forbidden.",
+      "es": "Acceso denegado."
+    },
+    "not_found": {
+      "en": "Resource not found.",
+      "es": "Recurso no encontrado."
+    },
+    "invalid_role": {
+        "en": "Invalid role.",
+        "es": "Rol no válido."
+    },
+    "bot_detected": {
+        "en": "Bot detected.",
+        "es": "Bot detectado."
+    },
+    "user_exists": {
+        "en": "User already exists.",
+        "es": "El usuario ya existe."
+    },
+    "user_save_error": {
+        "en": "Error saving user.",
+        "es": "Error al guardar el usuario."
+    },
+    "token_save_error": {
+        "en": "Error saving token.",
+        "es": "Error al guardar el token."
+    }
+  }
+}
+  

@@ -1,0 +1,9 @@
+DirectoryIndex index.php
+ 
+ RewriteEngine On
+ RewriteRule ^$ public/index.php [L]
+ RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
+ 
+ <IfModule mod_headers.c>
+Header set Access-Control-Allow-Origin "*"
+</IfModule>

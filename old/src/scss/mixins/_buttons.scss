@@ -1,0 +1,77 @@
+@use 'tokens/colors' as c;
+@use 'mixins/media' as m;
+
+@mixin button(
+  $variant: 'primary',
+  $size: 'md',
+  $with-icon: false
+) {
+  // Default values from tokens
+  $bg: c.c(brand-1);
+  $text: c.c(brand-1, text);
+  $hover: c.c(brand-1, hover);
+  $padding: 1rem 3rem;
+  $font-size: 1.4rem;
+  $radius: 1rem;
+  $border: none;
+
+  // Variant styles
+  @if $variant == 'primary' {
+    $bg: var(--brand-1);
+    $text: var(--brand-1-text);
+    $hover: var(--brand-1-hover);
+  } @else if $variant == 'secondary' {
+    $bg: var(--brand-2);
+    $text: var(--brand-2-text);
+    $hover: var(--brand-2-hover);
+  } @else if $variant == 'danger' {
+    $bg: var(--brand-3);
+    $text: var(--brand-3-text);
+    $hover: var(--brand-3-hover);
+  } @else if $variant == 'outline' {
+    $bg: transparent;
+    $text: var(--brand-1);
+    $hover: var(--brand-1-hover);
+    $border: 2px solid var(--brand-1);
+  }
+
+  // Size styles
+  @if $size == 'sm' {
+    $padding: 0.6rem 1.2rem;
+    $font-size: 1.2rem;
+  } @else if $size == 'md' {
+    $padding: 1rem 2rem;
+    $font-size: 1.4rem;
+  } @else if $size == 'lg' {
+    $padding: 1.4rem 3rem;
+    $font-size: 1.6rem;
+  }
+
+  background-color: $bg;
+  color: $text;
+  padding: $padding;
+  font-size: $font-size;
+  font-weight: bold;
+  border-radius: $radius;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: if($with-icon, 0.8rem, 0);
+  border: $border;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: $hover;
+    transform: scale(1.03);
+  }
+
+  @include m.max(tablet) {
+    width: 100%;
+    text-align: center;
+  }
+
+  svg, i {
+    font-size: $font-size;
+  }
+}

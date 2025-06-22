@@ -1,0 +1,52 @@
+@use 'sass:math';
+@use 'tokens/colors' as c;
+@use 'tokens/fonts' as f;
+@use 'tokens/spacing' as s;
+@use 'tokens/radius' as r;
+@use 'mixins/buttons' as b;
+@use 'mixins/cards' as k;
+@use 'mixins/media' as m;
+@use 'mixins/grid' as g;
+@use 'mixins/text'as t;
+
+.register{
+    width: 55%;
+    margin: 0 auto;
+    &__login{
+        text-align: center;
+        margin-top: s.s(sm);
+        &--link{
+            text-decoration: underline;
+        }
+    }
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    gap: s.s(md);
+    padding: s.s(md);
+    background-color: c.c(white);
+    border-radius: r.r(md);
+    box-shadow: c.c(shadow);
+    &__group{
+        display: flex;
+        flex-direction: column;
+        &__input{
+            padding: s.s(sm);
+            border-radius: r.r(md);
+            border: 1px solid c.c(brand-1);
+            border: 1px solid c.c(brand-1);
+            
+            &:focus{
+                outline: none;
+                border-color: c.c(brand-2);
+            }
+        }
+        &__label{
+            color: c.c(brand-1);
+            padding: s.s(xs);
+        }
+    }
+    
+}

@@ -1,0 +1,77 @@
+@use '../tokens/colors' as c;
+@use '../tokens/radius' as r;
+@use '../tokens/spacing' as s;
+@use './media' as *;
+
+/* ========================
+   CARD MIXINS
+======================== */
+
+// 🔹 Simple card
+@mixin card($bg: c.c(white), $border-color: c.c(brand-1), $border-size: 1rem) {
+  box-shadow: c.c(shadow);
+  background-color: $bg;
+  border-left: $border-size solid $border-color;
+  border-radius: r.r(md);
+  padding: s.s(md);
+}
+
+// 🔸 Card with hover effect (like a link)
+@mixin card-link($bg: c.c(brand-5), $hover-bg: c.c(brand-6), $border-color: c.c(brand-1)) {
+  box-shadow: c.c(shadow);
+  background-color: $bg;
+  border-left: 1.5rem solid $border-color;
+  border-radius: r.r(md);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-bg;
+    border-left-color: c.c(brand-1, hover);
+    cursor: pointer;
+  }
+}
+
+// 🛋 Lounge-style card
+@mixin card-dash($bg: c.c(white), $border-color: c.c(brand-2), $hover-border: c.c(brand-2)) {
+  box-shadow: c.c(shadow);
+  background-color: $bg;
+  border-left: 2rem solid $border-color;
+  border-radius: r.r(lg);
+  padding: s.s(sm);
+
+  @include min(tablet) {
+    padding: s.s(md);
+  }
+
+  &:hover {
+    border-left: 2rem solid $hover-border;
+    cursor: pointer;
+  }
+}
+
+// 📝 Form card
+@mixin card-form($bg: c.c(white), $border-color: c.c(brand-1), $hover-border: c.c(brand-2)) {
+  box-shadow: c.c(shadow);
+  background-color: $bg;
+  border-left: 2rem solid $border-color;
+  border-radius: r.r(md);
+  padding: s.s(sm);
+
+  @include min(tablet) {
+    padding: s.s(md);
+  }
+}
+
+// 🔹 Card with a title and a button
+@mixin card-title($bg: c.c(white), $border-color: c.c(brand-1), $border-size: 1rem) {
+  box-shadow: c.c(shadow);
+  background-color: $bg;
+  border-left: $border-size solid $border-color;
+  border-radius: r.r(md);
+  padding: s.s(md);
+  margin-bottom: s.s(lg);
+
+  @include min(tablet) {
+    margin-bottom: s.s(xl);
+  }
+}

@@ -1,0 +1,123 @@
+@use "sass:math";
+@use "tokens/colors" as c;
+@use "tokens/fonts" as f;
+@use "tokens/spacing" as s;
+@use "tokens/radius" as r;
+@use "mixins/buttons" as b;
+@use "mixins/cards" as k;
+@use "mixins/media" as m;
+@use "mixins/grid" as g;
+@use "mixins/text" as t;
+
+
+.banner-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    @include m.max(tablet){
+        flex-direction: column;
+    }
+    &--pets, &--vets{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: s.s(xl);
+        padding: s.s(xl);
+        width: 50%;
+        position: relative;
+        cursor: pointer;
+        &:hover > .banner-box__img, &:hover > .banner-box__title{
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+        @include m.max(tablet){
+            width: 100%;
+            padding: s.s(lg);
+            gap: s.s(md);
+            h2{
+                margin-bottom: 0;
+            }
+        }
+        
+    }
+    &--open{
+        @include m.min(tablet){
+            transition: all 0.75s ease;
+            width: 130%;
+        }
+    }
+    &--pets{
+        background-color: c.c(brand-6);
+        color: c.c(brand-6, text);
+        &:hover{
+            background-color: c.c(brand-6, hover);
+        }
+        &:hover > .banner-box--divider path{
+            stroke: c.c(brand-6, hover);
+        }
+    }
+    &--vets{
+        background-color: c.c(brand-7);
+        color: c.c(brand-7, text);
+        &:hover{
+            background-color: c.c(brand-7, hover);
+        }
+    }
+    &--divider {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 100%;
+        width: 25rem;
+        transform: translateX(-50%);
+        z-index: 3;
+        pointer-events: none;
+        @include m.max(tablet){
+            display: none;
+        }
+        
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        path {
+            stroke: c.c(brand-6);
+        }
+    }
+          
+    &__img{
+        max-width: 32vw;
+        max-height: 32vh;
+        @include m.min(tablet){
+            max-width: 50vw;
+            max-height: 50vh;
+        }
+    }
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: s.s(2xl);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        @include m.max(tablet){
+            flex-direction: column;
+            display: none;
+            gap: s.s(md);
+        }
+      
+        &.active {
+          opacity: 1;
+          pointer-events: auto;
+          @include m.max(tablet){
+              display: flex;
+              width: 100%;
+          }
+        }
+    }
+}
+
+  

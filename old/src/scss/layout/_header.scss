@@ -1,0 +1,177 @@
+@use "sass:math";
+@use "tokens/colors" as c;
+@use "tokens/fonts" as f;
+@use "tokens/spacing" as s;
+@use "tokens/radius" as r;
+@use "mixins/buttons" as b;
+@use "mixins/cards" as k;
+@use "mixins/media" as m;
+@use "mixins/grid" as g;
+@use "mixins/text" as t;
+
+
+.header{
+    position: relative;
+    &__container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+    }
+    &__logo{
+        width: 10rem;
+    }
+    &__nav{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        gap: s.s(2xl);
+        align-items: center;
+        &--list{
+            display: flex;
+            list-style: none;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            z-index: 1;
+            @include m.max(laptop){
+                position: absolute;
+                top: 0;
+                width: 100%;
+                transform: translate(1.5rem, 90%);
+                background-color: c.c(brand-2);
+                display: none;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+                pointer-events: none;
+            }
+            @include m.min(laptop){
+                flex-direction: row;
+                gap: s.s(2xl);
+                justify-content: flex-end;
+            }
+            &.nav-open{
+                @include m.max(laptop){
+                    display: flex;
+                    opacity: 1;
+                    pointer-events: all;
+                }
+            }
+        }
+        
+        &--link{
+            @include m.max(tablet){
+                width: 100%;
+                padding: 1.5rem;
+                background-color: c.c(brand-2);
+                color: c.c(brand-2, text);
+                &:hover{
+                    background-color: c.c(brand-2, hover);
+                    color: c.c(brand-2, text-hover);
+                }
+            }
+        }
+        &--extra{
+            display: flex;
+            gap: s.s(xl);
+            align-items: center;
+            @include m.min(tablet){
+                gap: s.s(2xl);
+            }
+        }
+        &--mobile {
+            & i{
+                &:hover{
+                    cursor: pointer;
+                    color: c.c((brand-2));
+                }
+            }
+        }
+    }
+    &__lang{
+        background: url('../img/lang.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        min-width: 5rem;
+        height: 2.2rem;
+        z-index: 11;
+        &:hover{
+            cursor: pointer;
+        }
+        @include m.max(tablet){
+            justify-content: flex-end;
+            background-position: 100%;
+            grid-column: 1/2;
+            margin-top: 0;
+            margin-right: 3rem;
+        }
+        @include m.max(midscreen){
+            margin-right: 0;
+            margin-top: 0;
+            transform: translateX(20%);
+        }
+        @include m.min(desktop){
+            height: 2.6rem;
+        }
+
+        &--btn{
+            background-color: c.c(brand-7);
+            border: none;
+            color: c.c(brand-7, text);
+            font-size: 1.8rem;
+            padding: 0.5rem 1rem;
+            border-radius: r.r(md);
+            &:hover{
+                cursor: pointer;
+                background-color: c.c(brand-7, hover);
+                color: c.c(brand-7, text-hover);
+            }
+        }
+    }
+
+    &__select{
+        display:flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; 
+        justify-content: center;
+        margin-top: 1rem;
+        border-radius: .1rem;
+        padding: 1rem;
+        @include m.min(tablet){
+            min-width: 10rem;
+            row-gap: 1rem;
+        }
+    }
+    &__theme{
+        background: url('../img/theme.png');
+        height: 3.5rem;
+        width: 3.5rem;
+        background-size: cover;
+        //background-position: right;
+        border-radius: r.r(circle);
+        &:hover{
+            cursor: pointer;
+            //background-position: left;
+        }
+        &--btn{
+            font-size: 1.2rem;
+            padding: 0.65rem 0.85rem;
+            border-radius: r.r(circle);
+            display: grid;
+            place-items: center;
+            @include m.min(tablet){
+                font-size: 1.7rem;
+            }
+        }
+    }
+}
+
+.theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  

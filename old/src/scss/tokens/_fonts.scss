@@ -1,0 +1,69 @@
+// --- Font Tokens ---
+@use "sass:map";
+
+
+
+$font-families: (
+    base: 'Nunito',
+    secondary: 'Poppins'
+);
+
+$font-weights: (
+    thin: 100,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+    black: 900
+);
+
+$font-sizes: (
+    xs:  clamp(0.75rem, 1vw, 0.875rem),
+    sm:  clamp(0.875rem, 1vw, 1rem),
+    md:  clamp(1rem, 1vw, 1.125rem),
+    lg:  clamp(1.25rem, 1.2vw, 1.5rem),
+    xl:  clamp(1.5rem, 1.5vw, 2rem),
+    xxl: clamp(2rem, 2vw, 3rem),
+    2xl: clamp(2.5rem, 2.5vw, 4rem),
+    3xl: clamp(3rem, 3vw, 5rem),
+    4xl: clamp(4rem, 4vw, 6rem),
+    5xl: clamp(5rem, 5vw, 7rem)
+);
+
+
+$line-heights: (
+    tight: 1.2,
+    normal: 1.5,
+    loose: 1.75
+);
+
+
+
+// --- font() helper ---
+
+
+@function f($type, $key) {
+  $map: null;
+
+  @if $type == 'family' {
+    $map: $font-families;
+  } @else if $type == 'weight' {
+    $map: $font-weights;
+  } @else if $type == 'size' {
+    $map: $font-sizes;
+  } @else if $type == 'line' {
+    $map: $line-heights;
+  } @else {
+    @warn "Unknown font type `#{$type}`. Use: family, weight, size, or line.";
+    @return null;
+  }
+
+  @if map.has-key($map, $key) {
+    @return map.get($map, $key);
+  } @else {
+    @warn "Font key `#{$key}` not found in #{$type} map.";
+    @return null;
+  }
+}
+
